@@ -18,12 +18,12 @@
           </div>
           <b-col md="4" class="cart-header">
             <h5 class="text-center">
-              Cart <span class="badge badge-cart">0</span>
+              Cart <span class="badge badge-cart">{{ count }}</span>
             </h5>
           </b-col>
           <div class="cart-mobile">
             <a href="#cart-section">
-              <h5 class="text-center">Cart <span class="badge badge-cart">0</span></h5>
+              <h5 class="text-center">Cart <span class="badge badge-cart">{{ count }}</span></h5>
             </a>
           </div>
         </b-row>
@@ -31,5 +31,20 @@
     </nav>
   </header>
 </template>
+<script>
+export default {
+  name: 'Navbar',
+  data() {
+    return {
+    }
+  },
+  props: ['count'],
+  methods: {
+    incCount(data) {
+      console.log(data)
+      this.cartCount += data
+    }
+  }
+}
 
-<!-- <script></script> -->
+</script>
