@@ -7,7 +7,7 @@
           <div class="card-body">
             <h5 class="product-name">{{ item.product_name }}</h5>
             <h5 class="price">Rp {{item.product_price}}</h5>
-            <b-button class="my-primary">Add</b-button>
+            <b-button class="my-primary col-12" @click="addToCart(item)">Add</b-button>
           </div>
         </b-card>
       </div>
@@ -24,10 +24,10 @@ export default {
       count: 0,
       cart: [],
       page: 1,
-      limit: 10,
+      limit: 9,
       sort: '',
       products: [],
-      img_url: '../../',
+      base_url: process.env.VUE_APP_BASE_URL,
       form: {
         product_name: '',
         product_price: '',
@@ -43,13 +43,32 @@ export default {
   },
   created() {
     this.get_product()
+    console.log(this.cart)
   },
   methods: {
+    increment() {
+      console.log('click')
+      this.$emit('increment', 1)
+    },
+    addToCart(data) {
+      const cekIndex = this.cart.findIndex(obj => obj.product_id === data.product_id)
+      // console.log(cekIndex)
+      if (cekIndex >= 0) {
+        this.cart[cekIndex].qty += 1
+      } else {
+        const setCart = {
+          product_id: data.product_id,
+          qty: 1
+        }
+        this.cart.push(setCart)
+      }
+      this.increment()
+      console.log(this.cart)
+    },
     get_product() {
-      axios.get('http://127.0.0.1:3000/product')
+      axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
         .then(res => {
           this.products = res.data.data
-          console.log(res)
         })
         .catch(error => {
           console.log(error)
@@ -57,4 +76,5 @@ export default {
     }
   }
 }
+
 </script>
