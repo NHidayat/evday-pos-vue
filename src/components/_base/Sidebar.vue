@@ -1,8 +1,13 @@
 <template>
   <b-col cols="2" md="2" class="sidebar">
     <ul>
-      <li><a><img src="../../assets/fork.png"></a></li>
-      <li><a><img src="../../assets/clipboard.png"></a></li>
+      <li><router-link to="/"><img src="../../assets/fork.png"></router-link></li>
+      <li>
+        <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
+      </li>
+      <li>
+        <router-link to="/product-manage"><img src="../../assets/data-manage.png"></router-link>
+      </li>
       <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
     </ul>
     <div>
@@ -11,19 +16,19 @@
           <div class=" form-group row">
             <label class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" v-model="form.product_name">
+              <input type="text" class="form-control" v-model="form.product_name" required />
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">Image</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" v-model="form.product_image">
+              <input type="text" class="form-control" v-model="form.product_image" required />
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">Price</label>
             <div class="col-sm-8">
-              <input type="text" class="form-control" v-model="form.product_price">
+              <input type="number" class="form-control" v-model="form.product_price" required />
             </div>
           </div>
           <div class="form-group row">
@@ -31,8 +36,7 @@
             <div class="col-sm-6">
               <select class="form-control" v-model="form.category_id" required>
                 <option value="" selected>Category</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
+                <option v-for="(item, index) in categories" :key="index" :value="item.category_id">{{ item.category_name }}</option>
               </select>
             </div>
           </div>
@@ -41,15 +45,14 @@
             <div class="col-sm-6">
               <select class="form-control" v-model="form.product_status" required>
                 <option value="" selected>Category</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
+                <option value="0">Not active</option>
+                <option value="1">Active</option>
               </select>
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
             <button type="submit" class="btn my-primary col-md-3">Add</button>
-            <!-- <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button> -->
           </div>
         </form>
       </b-modal>
@@ -63,6 +66,7 @@ export default {
     return {
       alert: false,
       isMsg: 'Tes',
+      categories: [],
       form: {
         product_name: '',
         product_price: '',
@@ -72,12 +76,17 @@ export default {
       }
     }
   },
+  created() {
+    this.getCategories()
+  },
   methods: {
-    makeToast(msg, append = false) {
+    makeToast(msg, variant = null, append = false) {
       this.$bvToast.toast(`${msg}`, {
         title: 'Hei',
         autoHideDelay: 10000,
-        appendToast: append
+        appendToast: append,
+        variant: variant,
+        solid: true
       })
     },
     closeModal() {
@@ -87,15 +96,24 @@ export default {
       // console.log(this.form)
       axios.post('http://127.0.0.1:3000/product', this.form)
         .then(res => {
-          this.products = res.data.data
           this.isMsg = res.data.msg
-          this.makeToast(this.isMsg)
+          this.makeToast(this.isMsg, 'primary')
           this.closeModal()
+          this.$emit('updateList', res.data.data)
         })
         .catch(error => {
           console.log(error)
           this.isMsg = error.response.data.msg
-          this.makeToast(this.isMsg)
+          this.makeToast(this.isMsg, 'danger')
+        })
+    },
+    getCategories() {
+      axios.get('http://127.0.0.1:3000/category')
+        .then(res => {
+          this.categories = res.data.data
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
   }
