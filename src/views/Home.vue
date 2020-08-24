@@ -3,16 +3,20 @@
     <Navbar :count="cartCount" />
     <section class="contents">
       <b-row>
-        <Sidebar />
+        <Sidebar @updateList="get_product" />
         <div class="main-content list-menu col-md-7 col-12">
           <div class="container">
             <div class="row">
               <b-card class="collection-item" v-for="(item, index) in products" :key="index">
                 <img v-bind:src="require(`../${item.product_image}`)" class="card-img-top" alt="...">
+                <div class="image-overlay" v-if="cekItemCart(item.product_id) >= 0">
+                  <img src="../assets/checklist.png" class="checklist">
+                </div>
                 <div class="card-body">
                   <h5 class="product-name">{{ item.product_name }}</h5>
                   <h5 class="price">Rp {{item.product_price}}</h5>
-                  <b-button class="my-primary col-12" @click="addToCart(item)">Add</b-button>
+                  <b-button class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart>
+                  </b-button>
                 </div>
               </b-card>
               <!-- <div class="col-md-4" v-for="(item, index) in products" :key="index">
@@ -67,6 +71,10 @@ export default {
     console.log(this.cart)
   },
   methods: {
+    cekItemCart(id) {
+      const cekIndex = this.cart.findIndex(obj => obj.product_id === id)
+      return cekIndex
+    },
     addToCart(data) {
       const cekIndex = this.cart.findIndex(obj => obj.product_id === data.product_id)
       // console.log(cekIndex)
