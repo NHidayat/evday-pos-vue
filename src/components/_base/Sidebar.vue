@@ -3,10 +3,10 @@
     <ul>
       <li><a><img src="../../assets/fork.png"></a></li>
       <li><a><img src="../../assets/clipboard.png"></a></li>
-      <li><a href="#add-item" v-b-modal.modal-1><img src="../../assets/add.png"></a></li>
+      <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
     </ul>
     <div>
-      <b-modal id="modal-1" ref="my-modal" hide-footer title="BootstrapVue">
+      <b-modal id="add-product-modal" ref="add-product-modal" hide-footer title="Add Product">
         <form @submit.prevent="addProduct">
           <div class=" form-group row">
             <label class="col-sm-2 col-form-label">Name</label>
@@ -81,7 +81,7 @@ export default {
       })
     },
     closeModal() {
-      this.$refs['my-modal'].hide()
+      this.$refs['add-product-modal'].hide()
     },
     addProduct() {
       // console.log(this.form)
@@ -93,8 +93,9 @@ export default {
           this.closeModal()
         })
         .catch(error => {
-          console.log(error.res)
           console.log(error)
+          this.isMsg = error.response.data.msg
+          this.makeToast(this.isMsg)
         })
     }
   }
