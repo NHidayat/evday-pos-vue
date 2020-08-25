@@ -18,6 +18,7 @@
             <div class="item-detail">
               <div class="item-name">
                 <strong>{{ item.product_name }}</strong>
+                <b-icon-trash class="float-right" @click="deleteCartItem(item)"></b-icon-trash>
               </div>
               <div class="item-calculation">
                 <div class="input-group">
@@ -79,8 +80,7 @@ export default {
   name: 'Cart',
   props: ['items', 'cartSubtotal', 'checkoutTotal', 'tax'],
   data() {
-    return {
-    }
+    return {}
   },
   methods: {
     getIndexPush(id, qty) {
@@ -98,6 +98,11 @@ export default {
     },
     decItemQty(id) {
       this.getIndexPush(id, -1)
+    },
+    deleteCartItem(data) {
+      const getIndex = this.items.findIndex(obj => obj.product_id === data.product_id)
+      this.items.splice(getIndex, 1)
+      this.$emit('changeItemQty', -data.qty)
     }
   }
 }
