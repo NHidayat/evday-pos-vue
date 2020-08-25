@@ -111,7 +111,7 @@ export default {
   },
   data() {
     return {
-      title: 'Product Manage',
+      title: 'Manage Product',
       productList: [],
       categories: [],
       product_id: '',
@@ -149,7 +149,6 @@ export default {
       axios.get('http://127.0.0.1:3000/product')
         .then(res => {
           this.productList = res.data.data
-          console.log(res.data.data)
         })
         .catch(error => {
           console.log(error)
@@ -200,7 +199,7 @@ export default {
         product_status: '0'
       }
       console.log(this.form)
-      if (confirm(`Untuk saat ini status "${data.product_name}" hanya akan diganti menjadi tidak aktif`)) {
+      if (confirm(`For now the status of "${data.product_name}" will only be changed to inactive`)) {
         this.patchProduct()
       }
     }
