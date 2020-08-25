@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <Cart :items="cart" :cartSubtotal="cartSubtotal" @changeItemQty="incCartCount" />
+        <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" />
         <ModalItem />
       </b-row>
     </section>
@@ -59,17 +59,23 @@ export default {
       alert: false,
       isMsg: 'Tes',
       isUpdate: false,
-      product_id: ''
+      product_id: '',
+      checkoutTotal: '0',
+      tax: '0'
     }
   },
   created() {
     this.get_product()
   },
   methods: {
-    incCartCount(data) {
+    getCheckout() {
+      this.tax = this.cartSubtotal * (10 / 100)
+      this.checkoutTotal = this.tax + this.cartSubtotal
+    },
+    updateCartQty(data) {
       this.cartCount += data
       this.getCartSubtotal()
-      console.log(this.cartSubtotal)
+      this.getCheckout()
     },
     cekItemCart(id) {
       return this.cart.findIndex(obj => obj.product_id === id)
@@ -100,6 +106,7 @@ export default {
         this.cartCount += 1
       }
       this.getCartSubtotal()
+      this.getCheckout()
     },
     get_product() {
       axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
