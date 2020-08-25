@@ -14,8 +14,11 @@
                 </div>
                 <div class="card-body">
                   <h5 class="product-name">{{ item.product_name }}</h5>
-                  <h5 class="price">Rp {{item.product_price}}</h5>
-                  <b-button class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart>
+                  <span>{{ item.category_name }}</span>
+                  <h5 class="price float-right">Rp {{item.product_price}}</h5>
+                  <b-button v-if="cekItemCart(item.product_id) >= 0" :disabled="true" variant="outline-success" class="col-12" @click="addToCart(item)">Added <b-icon-check></b-icon-check>
+                  </b-button>
+                  <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart>
                   </b-button>
                 </div>
               </b-card>
