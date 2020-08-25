@@ -30,7 +30,7 @@
             </div>
           </div>
         </div>
-        <Cart :count="cart" />
+        <Cart :items="cart" @changeItemQty="incCartCount"/>
         <ModalItem />
       </b-row>
     </section>
@@ -71,29 +71,31 @@ export default {
     console.log(this.cart)
   },
   methods: {
+    incCartCount(data) {
+      this.cartCount += data
+    },
     cekItemCart(id) {
-      const cekIndex = this.cart.findIndex(obj => obj.product_id === id)
-      return cekIndex
+      return this.cart.findIndex(obj => obj.product_id === id)
     },
     addToCart(data) {
       const cekIndex = this.cart.findIndex(obj => obj.product_id === data.product_id)
       // console.log(cekIndex)
       if (cekIndex >= 0) {
         this.cart[cekIndex].qty += 1
-        this.cart[cekIndex].subtotal += this.cart[cekIndex].subtotal
+        this.cart[cekIndex].subtotal += this.cart[cekIndex].product_price
         this.cartCount += 1
       } else {
         const setCart = {
           product_id: data.product_id,
           product_name: data.product_name,
           product_image: data.product_image,
+          product_price: data.product_price,
           qty: 1,
           subtotal: data.product_price
         }
         this.cart.push(setCart)
         this.cartCount += 1
       }
-      console.log(this.cart)
     },
     get_product() {
       axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
