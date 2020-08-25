@@ -9,29 +9,30 @@ body {
 
 /*-----additional------*/
 .semi {
-	color: #cecece;
+	color: #cecece !important;
 }
 
 .my-primary {
-	background: #57CAD5;
-	color: #fff;
+	background: #57CAD5 !important;
+	border-color: #57CAD5 !important;
+	color: #fff !important;
 }
 
 .my-primary:hover {
-	background: #17a2b8;
+	background: #17a2b8 !important;
 }
 
 .my-danger {
-	background: #F24F8A;
-	color: #fff;
+	background: #F24F8A !important;
+	color: #fff !important;
 }
 
 .my-danger:hover {
-	background: #da467c;
+	background: #da467c !important;
 }
 
 .my-danger:hover, .my-primary:hover {
-	color: #fff
+	color: #fff !important
 }
 
 select:invalid, select option[value=""] {
@@ -210,7 +211,7 @@ nav .cart-header h5{
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 150px;
+	height: 160px;
 	width: 100%;
 	background-color: rgba(0, 0, 0, 0.60);;
 	border-top-right-radius: 10px;
@@ -344,11 +345,12 @@ nav .cart-header h5{
 }
 
 .item-calculation .btn-qty-plus, .btn-qty-min {
-	color: #fff;
+	color: #fff !important;
 	font-weight: 900;
 	box-sizing: border-box;
-	border-radius: 0;
-	background: #57cad5;
+	border-radius: 0 !important;
+	border-color: #56cad5 !important;
+	background: #57cad5 !important;
 	height: 35px;
 	width: 35px;
 }
@@ -362,13 +364,13 @@ nav .cart-header h5{
 
 .input-group {
 	flex-grow: 1;
-	width: auto;
+	width: auto !important;
 }
 
 .input-group .qty {
-	width: 40px;
+	width: 40px !important;
 	height: 35px;
-	flex: none;
+	flex: none !important;
 	text-align: center;
 	border-radius: 0;
 	border: 1px solid #57cad5;;
@@ -535,6 +537,7 @@ nav .cart-header h5{
 }
 
 .table-section {
+	background: #fff;
 	border-radius: 10px;
 	margin: 30px auto;
 	box-shadow: 0px 5px 27px -11px rgba(0, 0, 0, 0.25);
@@ -548,5 +551,5 @@ nav .cart-header h5{
 }
 
 .table-section table tbody td {
-	color: #cecece
+	color: #444444
 }
