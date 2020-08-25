@@ -1,7 +1,7 @@
 <template>
   <aside class="cart-section col-md-4">
     <div class="cart-contents" id="cart-section">
-      <div class="empty-cart" v-if="count.length < 1">
+      <div class="empty-cart" v-if="items.length < 1">
         <img src="../../assets/food-and-restaurant.png">
         <h5>Your cart is empty</h5>
         <span>Please add some items from the menu</span>
@@ -10,7 +10,7 @@
         </div>
       </div>
       <div v-else>
-        <div class="a" v-for="(item, index) in count" :key="index">
+        <div class="a" v-for="(item, index) in items" :key="index">
           <div class="cart-item">
             <div class="item-image">
               <img :src="require(`../../${ item.product_image }`)">
@@ -21,9 +21,9 @@
               </div>
               <div class="item-calculation">
                 <div class="input-group">
-                  <button type="button" class="btn btn-qty-min"><span>&minus;</span></button>
+                  <b-button :disabled="item.qty === 1" class="btn-qty-min" @click="decItemQty(item.product_id)"><span>&minus;</span></b-button>
                   <input type="text" name="" class="form-control qty" v-model="item.qty" min="1" max="100">
-                  <button type="button" class="btn btn-qty-min"><span>&plus;</span></button>
+                  <b-button class="btn-qty-min" @click="incItemQty(item.product_id)"><span>&plus;</span></b-button>
                 </div>
                 <div class="item-price"><span>Rp {{ item.subtotal }}</span></div>
               </div>
@@ -33,7 +33,7 @@
         <div class="cart-footer">
           <div class="cart-total">
             <span>Total:</span>
-            <span class="float-right">Rp. 105.000*</span>
+            <span class="float-right">Rp. {{ cartSubtotal }}*</span>
           </div>
           <span>*Belum termasuk ppn</span>
           <div class="button-section">
@@ -48,13 +48,41 @@
 <script>
 export default {
   name: 'Cart',
-  props: ['count'],
+  props: ['items'],
   data() {
     return {
-      cartFilled: false
+      cartSubtotal: ''
     }
   },
-  methods: {}
+  created() {
+    this.getCartSubtotal()
+  },
+  methods: {
+    getCartSubtotal() {
+      if (this.items.length > 0) {
+        this.cartSubtotal = this.items.map(item => item.subtotal).reduce((a, b) => a + b)
+      } else {
+        this.cartSubtotal = 0
+      }
+    },
+    getIndexPush(id, qty) {
+      const getIndex = this.items.findIndex(obj => obj.product_id === id)
+      this.items[getIndex].qty += qty
+      if (qty > 0) {
+        this.items[getIndex].subtotal += this.items[getIndex].product_price
+      } else {
+        this.items[getIndex].subtotal -= this.items[getIndex].product_price
+      }
+      this.$emit('changeItemQty', qty)
+      this.getCartSubtotal()
+    },
+    incItemQty(id) {
+      this.getIndexPush(id, 1)
+    },
+    decItemQty(id) {
+      this.getIndexPush(id, -1)
+    }
+  }
 }
 
 </script>
