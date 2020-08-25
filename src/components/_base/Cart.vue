@@ -37,18 +37,47 @@
           </div>
           <span>*Belum termasuk ppn</span>
           <div class="button-section">
-            <a href="#" class="btn my-primary" data-toggle="modal" data-target="#checkoutmodal">Checkout</a>
+            <a href="#" class="btn my-primary" data-toggle="modal" v-b-modal.checkout-modal>Checkout</a>
             <a href="#" class="btn my-danger">Cancel</a>
           </div>
         </div>
       </div>
     </div>
+    <b-modal id="checkout-modal" ref="checkout-modal" hide-footer title="Checkout">
+      <div class="checkout-modal modal-body">
+        <div class="checkout-item row" v-for="(item, index) in items" :key="index">
+          <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
+          <div class="col-6 item-price">Rp. {{ item.subtotal }}</div>
+        </div>
+        <div class="checkout-item row">
+          <div class="col-6 item-name">Subtotal</div>
+          <div class="col-6 item-price">Rp. {{ cartSubtotal }}</div>
+        </div>
+        <div class="checkout-item row">
+          <div class="col-6 item-name">Ppn 10%</div>
+          <div class="col-6 item-price">Rp. {{ tax }}</div>
+        </div>
+        <div class="checkout-total row">
+          <div class="col-12" align="right">Total: Rp. {{ checkoutTotal }}</div>
+        </div>
+        <div class="checkout-item row">
+          <div class="col-md-12 item-name">Payment: Cash</div>
+        </div>
+        <div>
+          <div class="button-section row">
+            <button type="button" class="btn my-danger col-12">Print</button>
+            <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px">Or</span>
+            <button type="button" class="btn my-primary col-12">Send Email</button>
+          </div>
+        </div>
+      </div>
+    </b-modal>
   </aside>
 </template>
 <script>
 export default {
   name: 'Cart',
-  props: ['items', 'cartSubtotal'],
+  props: ['items', 'cartSubtotal', 'checkoutTotal', 'tax'],
   data() {
     return {
     }
