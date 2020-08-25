@@ -48,23 +48,12 @@
 <script>
 export default {
   name: 'Cart',
-  props: ['items'],
+  props: ['items', 'cartSubtotal'],
   data() {
     return {
-      cartSubtotal: ''
     }
   },
-  created() {
-    this.getCartSubtotal()
-  },
   methods: {
-    getCartSubtotal() {
-      if (this.items.length > 0) {
-        this.cartSubtotal = this.items.map(item => item.subtotal).reduce((a, b) => a + b)
-      } else {
-        this.cartSubtotal = 0
-      }
-    },
     getIndexPush(id, qty) {
       const getIndex = this.items.findIndex(obj => obj.product_id === id)
       this.items[getIndex].qty += qty
@@ -74,7 +63,6 @@ export default {
         this.items[getIndex].subtotal -= this.items[getIndex].product_price
       }
       this.$emit('changeItemQty', qty)
-      this.getCartSubtotal()
     },
     incItemQty(id) {
       this.getIndexPush(id, 1)

@@ -19,18 +19,10 @@
                   </b-button>
                 </div>
               </b-card>
-              <!-- <div class="col-md-4" v-for="(item, index) in products" :key="index">
-                <b-card title="Card Title" v-bind:img-src="require('../assets/menu/cappucino.jpg')" img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="mb-2">
-                  <b-card-text>
-                    Some quick example text to build on the card title and make up the bulk of the card's content.
-                  </b-card-text>
-                  <b-button href="#" variant="primary">Go somewhere</b-button>
-                </b-card>
-              </div> -->
             </div>
           </div>
         </div>
-        <Cart :items="cart" @changeItemQty="incCartCount"/>
+        <Cart :items="cart" :cartSubtotal="cartSubtotal" @changeItemQty="incCartCount" />
         <ModalItem />
       </b-row>
     </section>
@@ -55,6 +47,7 @@ export default {
     return {
       cartCount: 0,
       cart: [],
+      cartSubtotal: '',
       page: 1,
       limit: 9,
       sort: '',
@@ -68,18 +61,25 @@ export default {
   },
   created() {
     this.get_product()
-    console.log(this.cart)
   },
   methods: {
     incCartCount(data) {
       this.cartCount += data
+      this.getCartSubtotal()
+      console.log(this.cartSubtotal)
     },
     cekItemCart(id) {
       return this.cart.findIndex(obj => obj.product_id === id)
     },
+    getCartSubtotal() {
+      if (this.cart.length > 0) {
+        this.cartSubtotal = this.cart.map(item => item.subtotal).reduce((a, b) => a + b)
+      } else {
+        this.cartSubtotal = 0
+      }
+    },
     addToCart(data) {
       const cekIndex = this.cart.findIndex(obj => obj.product_id === data.product_id)
-      // console.log(cekIndex)
       if (cekIndex >= 0) {
         this.cart[cekIndex].qty += 1
         this.cart[cekIndex].subtotal += this.cart[cekIndex].product_price
@@ -96,6 +96,7 @@ export default {
         this.cart.push(setCart)
         this.cartCount += 1
       }
+      this.getCartSubtotal()
     },
     get_product() {
       axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
