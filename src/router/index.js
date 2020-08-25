@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import History from '../views/History.vue'
-import ProductManage from '../views/Product_manage.vue'
+import ManageProduct from '../views/Product_manage.vue'
+import ManageCotegory from '../views/Category_manage.vue'
 
 Vue.use(VueRouter)
 
@@ -18,9 +19,14 @@ const routes = [
     component: History
   },
   {
-    path: '/product-manage',
-    name: 'Product Manage',
-    component: ProductManage
+    path: '/manage-product',
+    name: 'Manage Product',
+    component: ManageProduct
+  },
+  {
+    path: '/manage-category',
+    name: 'Manage Category',
+    component: ManageCotegory
   },
   {
     path: '/about',

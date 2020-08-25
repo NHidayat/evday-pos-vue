@@ -6,7 +6,10 @@
         <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
       </li>
       <li>
-        <router-link to="/product-manage"><img src="../../assets/data-manage.png"></router-link>
+        <router-link to="/manage-product"><img src="../../assets/data-manage.png"></router-link>
+      </li>
+      <li>
+        <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
       </li>
       <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
     </ul>
