@@ -38,8 +38,8 @@
                     <td>Rp {{ item.product_price }}</td>
                     <td>{{ item.product_status === 1 ? 'Active' : 'Not Active' }}</td>
                     <td>
-                      <b-button variant="outline-primary" size="sm" @click="setProduct(item)">
-                        <b-icon icon="pencil" v-b-modal.edit-product-modal></b-icon>
+                      <b-button variant="outline-primary" size="sm" @click="setProduct(item)" v-b-modal.edit-product-modal>
+                        <b-icon icon="pencil"></b-icon>
                       </b-button>
                       <b-button variant="outline-danger" size="sm" @click="deleteProduct(item)">
                         <b-icon icon="trash"></b-icon>
@@ -102,7 +102,6 @@
 import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
-// import Cart from '../components/_base/Cart'
 export default {
   name: 'Product-manage',
   components: {
@@ -189,18 +188,19 @@ export default {
         })
     },
     deleteProduct(data) {
-      console.log(data.product_id)
       this.product_id = data.product_id
-      this.form = {
-        product_name: data.product_name,
-        product_price: data.product_price,
-        product_image: data.product_image,
-        category_id: data.category_id,
-        product_status: '0'
-      }
-      console.log(this.form)
-      if (confirm(`For now the status of "${data.product_name}" will only be changed to inactive`)) {
-        this.patchProduct()
+      if (confirm(`Are Sure delete the "${data.product_name}"?`)) {
+        axios.delete(`http://127.0.0.1:3000/product/${this.product_id}`)
+          .then(res => {
+            this.isMsg = res.data.msg
+            this.makeToast(this.isMsg, 'primary')
+            this.get_product()
+          })
+          .catch(error => {
+            console.log(error)
+            this.isMsg = error.response.data.msg
+            this.makeToast(this.isMsg, 'danger')
+          })
       }
     }
   }
