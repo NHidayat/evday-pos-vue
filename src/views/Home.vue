@@ -117,10 +117,15 @@ export default {
           console.log(error)
         })
     },
-    clearCart() {
-      if (confirm('Are you sure you canceled this order?')) {
+    clearCart(data) {
+      if (data === true) {
         this.cart = []
         this.cartCount = 0
+      } else {
+        if (confirm('Are you sure canceled this order?')) {
+          this.cart = []
+          this.cartCount = 0
+        }
       }
     }
   }
