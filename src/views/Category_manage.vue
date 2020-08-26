@@ -8,6 +8,7 @@
           <div class="row">
             <div class="col-6">
               <h3>Category List</h3>
+              <b-button v-b-modal.category-modal @click="setAdd">Add Catgory</b-button>
             </div>
             <div class="col-6">
               <select class="float-right range-select">
@@ -36,8 +37,8 @@
                     <td>{{ item.category_updated_at }}</td>
                     <td>{{ item.category_status === 1 ? 'Active' : 'Not Active' }}</td>
                     <td>
-                      <b-button variant="outline-primary" size="sm" @click="setcategory(item)">
-                        <b-icon icon="pencil" v-b-modal.edit-category-modal></b-icon>
+                      <b-button variant="outline-primary" v-b-modal.category-modal size="sm" @click="setcategory(item)">
+                        <b-icon icon="pencil"></b-icon>
                       </b-button>
                       <b-button variant="outline-danger" size="sm" @click="deletecategory(item)">
                         <b-icon icon="trash"></b-icon>
@@ -51,8 +52,8 @@
         </div>
       </div>
     </b-container>
-    <b-modal id="edit-category-modal" ref="edit-category-modal" hide-footer title="Edit category">
-      <form @submit.prevent="patchcategory">
+    <b-modal id="category-modal" ref="category-modal" hide-footer :title="modalTitle">
+      <form @submit.prevent="postCategory">
         <div class=" form-group row">
           <label class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-10">
@@ -70,7 +71,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-          <button type="submit" class="btn my-primary col-md-3">Update</button>
+          <button type="button" class="btn my-primary col-md-3" @click="patchCategory" v-show="isUpdate">Update</button>
+          <button type="submit" class="btn my-primary col-md-3" v-show="!isUpdate">Add</button>
         </div>
       </form>
     </b-modal>
@@ -80,7 +82,6 @@
 import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
-// import Cart from '../components/_base/Cart'
 export default {
   name: 'category-manage',
   components: {
@@ -91,6 +92,8 @@ export default {
     return {
       title: 'Manage Category',
       categoryList: [],
+      modalTitle: '',
+      isUpdate: false,
       form: {
         category_name: '',
         category_status: ''
@@ -102,7 +105,7 @@ export default {
   },
   methods: {
     closeModal() {
-      this.$refs['edit-category-modal'].hide()
+      this.$refs['category-modal'].hide()
     },
     makeToast(msg, variant = null, append = false) {
       this.$bvToast.toast(`${msg}`, {
@@ -122,21 +125,42 @@ export default {
           console.log(error)
         })
     },
+    setAdd() {
+      this.modalTitle = 'Add Category'
+      this.isUpdate = false
+    },
+    postCategory() {
+      axios.post('http://127.0.0.1:3000/category', this.form)
+        .then(res => {
+          this.categorys = res.data.data
+          this.isMsg = res.data.msg
+          this.makeToast(this.isMsg, 'primary')
+          this.getCategories()
+          this.closeModal()
+        })
+        .catch(error => {
+          console.log(error)
+          this.isMsg = error.response.data.msg
+          this.makeToast(this.isMsg, 'danger')
+        })
+    },
     setcategory(data) {
+      this.modalTitle = 'Edit Category'
+      this.isUpdate = true
       this.form = {
         category_name: data.category_name,
         category_status: data.category_status
       }
       this.category_id = data.category_id
     },
-    patchcategory() {
+    patchCategory() {
       axios.patch(`http://127.0.0.1:3000/category/${this.category_id}`, this.form)
         .then(res => {
           this.categorys = res.data.data
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
-          this.closeModal()
           this.getCategories()
+          this.closeModal()
         })
         .catch(error => {
           console.log(error)
@@ -152,7 +176,7 @@ export default {
         category_status: '0'
       }
       if (confirm(`For now the status of "${data.category_name}" will only be changed to inactive`)) {
-        this.patchcategory()
+        this.patchCategory()
       }
     }
   }
