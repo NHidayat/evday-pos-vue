@@ -18,7 +18,7 @@
             <div class="item-detail">
               <div class="item-name">
                 <strong>{{ item.product_name }}</strong>
-                <b-icon-trash class="float-right" @click="deleteCartItem(item)"></b-icon-trash>
+                <b-icon-trash class="float-right trash" @click="deleteCartItem(item)"></b-icon-trash>
               </div>
               <div class="item-calculation">
                 <div class="input-group">
@@ -39,12 +39,13 @@
           <span>*Belum termasuk ppn</span>
           <div class="button-section">
             <a href="#" class="btn my-primary" data-toggle="modal" v-b-modal.checkout-modal>Checkout</a>
-            <a href="#" class="btn my-danger">Cancel</a>
+            <a href="#" class="btn my-danger" @click="cancelCart
+">Cancel</a>
           </div>
         </div>
       </div>
     </div>
-    <b-modal id="checkout-modal" ref="checkout-modal" hide-footer title="Checkout">
+    <b-modal scrollable id="checkout-modal" ref="checkout-modal" hide-footer title="Checkout">
       <div class="checkout-modal modal-body">
         <div class="checkout-item row" v-for="(item, index) in items" :key="index">
           <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
@@ -103,6 +104,9 @@ export default {
       const getIndex = this.items.findIndex(obj => obj.product_id === data.product_id)
       this.items.splice(getIndex, 1)
       this.$emit('changeItemQty', -data.qty)
+    },
+    cancelCart() {
+      this.$emit('clearCart')
     }
   }
 }

@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" />
+        <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" @clearCart="clearCart" />
         <ModalItem />
       </b-row>
     </section>
@@ -67,15 +67,17 @@ export default {
   created() {
     this.get_product()
   },
+  updated() {
+    this.getCartSubtotal()
+    this.generateCheckoutData()
+  },
   methods: {
-    getCheckout() {
+    generateCheckoutData() {
       this.tax = this.cartSubtotal * (10 / 100)
       this.checkoutTotal = this.tax + this.cartSubtotal
     },
     updateCartQty(data) {
       this.cartCount += data
-      this.getCartSubtotal()
-      this.getCheckout()
     },
     cekItemCart(id) {
       return this.cart.findIndex(obj => obj.product_id === id)
@@ -105,8 +107,6 @@ export default {
         this.cart.push(setCart)
         this.cartCount += 1
       }
-      this.getCartSubtotal()
-      this.getCheckout()
     },
     get_product() {
       axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
@@ -116,9 +116,15 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    clearCart() {
+      if (confirm('Are you sure you canceled this order?')) {
+        this.cart = []
+        this.cartCount = 0
+      }
     }
   }
 }
 
 </script>
-<style src="../assets/css/style.css">
+<style src="../assets/css/style.css"></style>
