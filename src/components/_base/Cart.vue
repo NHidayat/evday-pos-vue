@@ -33,57 +33,93 @@
         </div>
         <div class="cart-footer">
           <div class="cart-total">
-            <span>Total:</span>
-            <span class="float-right">Rp. {{ cartSubtotal }}*</span>
+            <b-row>
+              <b-col md="12" class="mb-2">
+                <small class="float-right">Cart Total: Rp. {{ cartSubtotal }}* + Tax 10% : Rp. {{ tax }}*</small>
+              </b-col>
+              <b-col>Total</b-col>
+              <b-col><span class="float-right">Rp. {{ checkoutTotal }}*</span></b-col>
+            </b-row>
           </div>
-          <span>*Belum termasuk ppn</span>
           <div class="button-section">
-            <a href="#" class="btn my-primary" data-toggle="modal" v-b-modal.checkout-modal>Checkout</a>
-            <a href="#" class="btn my-danger" @click="cancelCart
-">Cancel</a>
+            <a href="#" class="btn my-primary" data-toggle="modal" @click="postOrder">Checkout</a>
+            <a href="#" class="btn my-danger" @click="emptyCart">Cancel</a>
           </div>
         </div>
       </div>
     </div>
-    <b-modal scrollable id="checkout-modal" ref="checkout-modal" hide-footer title="Checkout">
+    <b-modal scrollable id="checkout-modal" ref="checkout-modal" hide-footer hide-header>
+      <div class="modal-header">
+        <b-row>
+          <b-col md="3">
+            <h5>Checkout</h5>
+          </b-col>
+          <b-col md="9"><span class="float-right">Receipt no: #{{ invoice }}</span></b-col>
+          <b-col md="12"><span>Cashier: {{ cashier_name }}</span></b-col>
+        </b-row>
+      </div>
       <div class="checkout-modal modal-body">
-        <div class="checkout-item row" v-for="(item, index) in items" :key="index">
+        <b-row class="checkout-item" v-for="(item, index) in resCartItems" :key="index">
           <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
           <div class="col-6 item-price">Rp. {{ item.subtotal }}</div>
-        </div>
-        <div class="checkout-item row">
+        </b-row>
+        <b-row class="checkout-item">
           <div class="col-6 item-name">Subtotal</div>
-          <div class="col-6 item-price">Rp. {{ cartSubtotal }}</div>
-        </div>
-        <div class="checkout-item row">
+          <div class="col-6 item-price">Rp. {{ resCartSubtotal }}</div>
+        </b-row>
+        <b-row class="checkout-item">
           <div class="col-6 item-name">Ppn 10%</div>
-          <div class="col-6 item-price">Rp. {{ tax }}</div>
-        </div>
-        <div class="checkout-total row">
-          <div class="col-12" align="right">Total: Rp. {{ checkoutTotal }}</div>
-        </div>
-        <div class="checkout-item row">
+          <div class="col-6 item-price">Rp. {{ resTax }}</div>
+        </b-row>
+        <b-row class="checkout-total">
+          <div class="col-12" align="right">Total: Rp. {{ resTotal }}</div>
+        </b-row>
+        <b-row class="checkout-item">
           <div class="col-md-12 item-name">Payment: Cash</div>
-        </div>
+        </b-row>
         <div>
-          <div class="button-section row">
+          <b-row class="modal-footer button-section">
             <button type="button" class="btn my-danger col-12">Print</button>
             <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px">Or</span>
             <button type="button" class="btn my-primary col-12">Send Email</button>
-          </div>
+          </b-row>
         </div>
       </div>
     </b-modal>
   </aside>
 </template>
 <script>
+import axios from 'axios'
 export default {
   name: 'Cart',
   props: ['items', 'cartSubtotal', 'checkoutTotal', 'tax'],
   data() {
-    return {}
+    return {
+      isMsg: '',
+      invoice: '',
+      cashier_name: '',
+      resCartItems: [],
+      resCartSubtotal: '',
+      resTax: '',
+      resTotal: ''
+    }
   },
   methods: {
+    showModal() {
+      this.$refs['checkout-modal'].show()
+    },
+    hideModal() {
+      this.$refs['checkout-modal'].hide()
+    },
+    makeToast(msg, variant = null, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Hei',
+        autoHideDelay: 10000,
+        appendToast: append,
+        variant: variant,
+        solid: true
+      })
+    },
     getIndexPush(id, qty) {
       const getIndex = this.items.findIndex(obj => obj.product_id === id)
       this.items[getIndex].qty += qty
@@ -105,8 +141,29 @@ export default {
       this.items.splice(getIndex, 1)
       this.$emit('changeItemQty', -data.qty)
     },
-    cancelCart() {
-      this.$emit('clearCart')
+    emptyCart(finish) {
+      this.$emit('clearCart', finish)
+    },
+    postOrder() {
+      const cart = { items: this.items }
+      axios.post('http://127.0.0.1:3000/history', cart)
+        .then(res => {
+          this.isMsg = res.data.msg
+          this.invoice = res.data.data.history_invoice
+          this.resCartItems = res.data.data.items
+          this.cashier_name = res.data.data.cashier_name
+          this.resCartSubtotal = res.data.data.items.map(item => item.subtotal).reduce((a, b) => a + b)
+          this.resTax = res.data.data.history_ppn
+          this.resTotal = res.data.data.history_total
+          this.makeToast(this.isMsg, 'primary')
+          this.showModal()
+          this.emptyCart(true)
+        })
+        .catch(error => {
+          console.log(error)
+          this.isMsg = error.response.data.msg
+          this.makeToast(this.isMsg, 'danger')
+        })
     }
   }
 }
