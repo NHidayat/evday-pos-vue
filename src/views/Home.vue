@@ -23,6 +23,9 @@
                 </div>
               </b-card>
             </div>
+            <div class="mt-3">
+              <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="pageSetup" align="center"></b-pagination>
+            </div>
           </div>
         </div>
         <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" @clearCart="clearCart" />
@@ -52,7 +55,8 @@ export default {
       cart: [],
       cartSubtotal: '',
       page: 1,
-      limit: 9,
+      limit: 6,
+      totalData: '',
       sort: '',
       products: [],
       base_url: process.env.VUE_APP_BASE_URL,
@@ -72,6 +76,11 @@ export default {
     this.generateCheckoutData()
   },
   methods: {
+    pageSetup(data) {
+      this.page = data
+      this.get_product()
+      this.$router.push(`?page=${this.page}`)
+    },
     generateCheckoutData() {
       this.tax = this.cartSubtotal * (10 / 100)
       this.checkoutTotal = this.tax + this.cartSubtotal
@@ -112,6 +121,7 @@ export default {
       axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
         .then(res => {
           this.products = res.data.data
+          this.totalData = res.data.pagination.totalData
         })
         .catch(error => {
           console.log(error)
