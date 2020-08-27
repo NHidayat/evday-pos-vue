@@ -9,10 +9,17 @@
                 <img src="../../assets/menu.png" class="menu-icon">
               </b-col>
               <b-col md="10" cols="9" class="nav-title">
-                <h4 class="text-center">Food Items</h4>
+                <h4 class="text-center" v-if="!isSearch">Evday POS</h4>
+                <form v-else @submit.prevent="searchProduct">
+                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-sm-11" v-model="form.product_name"/>
+                  <b-button class="col-sm-1"><b-icon-search></b-icon-search></b-button>
+                </form>
               </b-col>
               <b-col cols="1" md="1" class="search-section">
-                <img src="../../assets/search.png" class="search-icon">
+                <img src="../../assets/search.png" class="search-icon" v-if="!isSearch" @click="showSearch">
+                <h4 v-else class="mt-3">
+                  <b-icon-x-circle @click="closeSearch"></b-icon-x-circle>
+                </h4>
               </b-col>
             </b-row>
           </div>
@@ -36,10 +43,21 @@ export default {
   name: 'Navbar',
   data() {
     return {
+      isSearch: false,
+      form: { product_name: '' }
     }
   },
   props: ['count'],
   methods: {
+    showSearch() {
+      this.isSearch = true
+    },
+    closeSearch() {
+      this.isSearch = false
+    },
+    searchProduct() {
+      this.$emit('searchProduct', this.form)
+    },
     incCount(data) {
       console.log(data)
       this.cartCount += data
