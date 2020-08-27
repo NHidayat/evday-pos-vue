@@ -1,11 +1,12 @@
 <template>
   <div class="home">
-    <Navbar :count="cartCount" />
+    <Navbar :count="cartCount" @searchProduct="searchProduct" />
     <section class="contents">
       <b-row>
         <Sidebar @updateList="get_product" />
         <div class="main-content list-menu col-md-7 col-12">
           <div class="container">
+            <SortingGroup @generateSorting="generateSorting" />
             <div class="row">
               <b-card class="collection-item" v-for="(item, index) in products" :key="index">
                 <img v-bind:src="require(`../${item.product_image}`)" class="card-img-top" alt="...">
@@ -24,7 +25,7 @@
               </b-card>
             </div>
             <div class="mt-3">
-              <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="pageSetup" align="center"></b-pagination>
+              <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="paginationSetup" align="center"></b-pagination>
             </div>
           </div>
         </div>
@@ -35,9 +36,9 @@
   </div>
 </template>
 <script>
-// @ is an alias to /src
 import Navbar from '../components/_base/Navbar'
 import Sidebar from '../components/_base/Sidebar'
+import SortingGroup from '../components/_base/Sorting_group'
 import Cart from '../components/_base/Cart'
 import ModalItem from '../components/_base/Modal_form'
 import axios from 'axios'
@@ -46,6 +47,7 @@ export default {
   components: {
     Navbar,
     Sidebar,
+    SortingGroup,
     Cart,
     ModalItem
   },
@@ -57,7 +59,6 @@ export default {
       page: 1,
       limit: 6,
       totalData: '',
-      sort: '',
       products: [],
       base_url: process.env.VUE_APP_BASE_URL,
       alert: false,
@@ -65,7 +66,8 @@ export default {
       isUpdate: false,
       product_id: '',
       checkoutTotal: '0',
-      tax: '0'
+      tax: '0',
+      selectedSorting: 'product_name ASC'
     }
   },
   created() {
@@ -76,10 +78,15 @@ export default {
     this.generateCheckoutData()
   },
   methods: {
-    pageSetup(data) {
+    paginationSetup(data) {
       this.page = data
       this.get_product()
       this.$router.push(`?page=${this.page}`)
+    },
+    generateSorting(data) {
+      this.selectedSorting = data
+      this.$router.push(`?orderBy=${data}`)
+      this.get_product()
     },
     generateCheckoutData() {
       this.tax = this.cartSubtotal * (10 / 100)
@@ -118,10 +125,20 @@ export default {
       }
     },
     get_product() {
-      axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}`)
+      axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
         .then(res => {
           this.products = res.data.data
           this.totalData = res.data.pagination.totalData
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    searchProduct(data) {
+      axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
+        .then(res => {
+          this.products = res.data.data
+          this.$router.push(`?product_name=${data.product_name}`)
         })
         .catch(error => {
           console.log(error)
