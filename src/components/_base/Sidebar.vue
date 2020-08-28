@@ -6,7 +6,7 @@
         <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
       </li>
       <li>
-        <router-link to="/manage-product"><img src="../../assets/data-manage.png"></router-link>
+        <router-link to="/manage-product"><img src="../../assets/manage-product.png"></router-link>
       </li>
       <li>
         <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
