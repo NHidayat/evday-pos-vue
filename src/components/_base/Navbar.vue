@@ -11,14 +11,14 @@
               <b-col md="10" cols="9" class="nav-title">
                 <h4 class="text-center" v-if="!isSearch">Evday POS</h4>
                 <form v-else @submit.prevent="searchProduct">
-                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-sm-11" v-model="form.product_name"/>
-                  <b-button class="col-sm-1"><b-icon-search></b-icon-search></b-button>
+                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-12" v-model="form.product_name"/>
+                  <b-button type="submit" class="c-serach-btn my-primary mt-1" size="sm"><b-icon-search></b-icon-search></b-button>
                 </form>
               </b-col>
               <b-col cols="1" md="1" class="search-section">
                 <img src="../../assets/search.png" class="search-icon" v-if="!isSearch" @click="showSearch">
                 <h4 v-else class="mt-3">
-                  <b-icon-x-circle @click="closeSearch"></b-icon-x-circle>
+                  <b-icon-x-circle class="c-close-icon" @click="closeSearch"></b-icon-x-circle>
                 </h4>
               </b-col>
             </b-row>
