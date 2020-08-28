@@ -8,13 +8,19 @@
           <div class="row">
             <div class="col-6">
               <h3>Category List</h3>
-              <b-button v-b-modal.category-modal @click="setAdd">Add Catgory</b-button>
+              <b-button variant="outline-success" v-b-modal.category-modal @click="setAdd">
+                <b-icon-plus></b-icon-plus>
+                Add Catgory
+              </b-button>
             </div>
             <div class="col-6">
               <select class="float-right range-select">
                 <option value="month">Sort</option>
               </select>
             </div>
+          </div>
+          <div class="mt-2">
+            <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
           </div>
           <div class="row">
             <div class="col-md-12">
@@ -94,6 +100,8 @@ export default {
       categoryList: [],
       modalTitle: '',
       isUpdate: false,
+      isAlert: false,
+      alertMsg: '',
       form: {
         category_name: '',
         category_status: ''
@@ -104,8 +112,15 @@ export default {
     this.getCategories()
   },
   methods: {
+    clearForm() {
+      this.form = {
+        category_name: '',
+        category_status: ''
+      }
+    },
     closeModal() {
       this.$refs['category-modal'].hide()
+      this.clearForm()
     },
     makeToast(msg, variant = null, append = false) {
       this.$bvToast.toast(`${msg}`, {
@@ -123,6 +138,8 @@ export default {
         })
         .catch(error => {
           console.log(error)
+          this.isAlert = true
+          this.alertMsg = error.response.data.msg
         })
     },
     setAdd() {
@@ -137,6 +154,7 @@ export default {
           this.makeToast(this.isMsg, 'primary')
           this.getCategories()
           this.closeModal()
+          this.clearForm()
         })
         .catch(error => {
           console.log(error)

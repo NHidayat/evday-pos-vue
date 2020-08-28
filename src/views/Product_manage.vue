@@ -1,7 +1,7 @@
 <template>
   <div class="product-manage">
     <Navbar :title="title" />
-    <Sidebar />
+    <Sidebar @updateList="get_product" />
     <b-container>
       <div class="main-content md-12">
         <div class="table-section">
@@ -14,6 +14,9 @@
                 <option value="month">Sort</option>
               </select>
             </div>
+          </div>
+          <div class="mt-2">
+            <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
           </div>
           <div class="row">
             <div class="col-md-12">
@@ -116,8 +119,10 @@ export default {
       product_id: '',
       limit: '',
       page: '',
-      orderBy: '',
+      orderBy: 'product_created_at DESC',
       sort: '',
+      isAlert: false,
+      alertMsg: '',
       form: {
         product_name: '',
         product_price: '',
@@ -145,12 +150,14 @@ export default {
       })
     },
     get_product() {
-      axios.get('http://127.0.0.1:3000/product')
+      axios.get(`http://127.0.0.1:3000/product?orderBy=${this.orderBy}`)
         .then(res => {
           this.productList = res.data.data
         })
         .catch(error => {
           console.log(error)
+          this.isAlert = true
+          this.alertMsg = error.response.data.msg
         })
     },
     getCategories() {
