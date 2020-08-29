@@ -1,61 +1,61 @@
 <template>
   <div class="product-manage">
     <Navbar :title="title" />
-    <Sidebar @updateList="get_product" />
-    <b-container>
-      <div class="main-content md-12">
-        <div class="table-section">
-          <div class="row">
-            <div class="col-6">
-              <h3>Product List</h3>
-            </div>
-            <div class="col-6">
-              <select class="float-right range-select">
-                <option value="month">Sort</option>
-              </select>
+    <section class="contents">
+      <b-row>
+        <Sidebar @updateList="get_product" />
+        <b-container>
+          <div class="main-content col-md-12">
+            <div class="table-section">
+              <div class="row">
+                <div class="col-md-12">
+                  <h3>Product List</h3>
+                  <SortingGroup @generateSorting="generateSorting" />
+                </div>
+              </div>
+              <div class="mt-2">
+                <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <table class="table table-responsive-sm">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in productList" :key="index">
+                        <td>{{ index+1 }}</td>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.product_image }}</td>
+                        <td>{{ item.category_name }}</td>
+                        <td>Rp {{ item.product_price }}</td>
+                        <td>{{ item.product_status === 1 ? 'Active' : 'Not Active' }}</td>
+                        <td>
+                          <b-button variant="outline-primary" size="sm" @click="setProduct(item)" v-b-modal.edit-product-modal>
+                            <b-icon icon="pencil"></b-icon>
+                          </b-button>
+                          <b-button variant="outline-danger" size="sm" @click="deleteProduct(item)">
+                            <b-icon icon="trash"></b-icon>
+                          </b-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="mt-2">
-            <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <table class="table table-responsive-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in productList" :key="index">
-                    <td>{{ index+1 }}</td>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.product_image }}</td>
-                    <td>{{ item.category_name }}</td>
-                    <td>Rp {{ item.product_price }}</td>
-                    <td>{{ item.product_status === 1 ? 'Active' : 'Not Active' }}</td>
-                    <td>
-                      <b-button variant="outline-primary" size="sm" @click="setProduct(item)" v-b-modal.edit-product-modal>
-                        <b-icon icon="pencil"></b-icon>
-                      </b-button>
-                      <b-button variant="outline-danger" size="sm" @click="deleteProduct(item)">
-                        <b-icon icon="trash"></b-icon>
-                      </b-button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-container>
+        </b-container>
+      </b-row>
+    </section>
     <b-modal id="edit-product-modal" ref="edit-product-modal" hide-footer title="Edit Product">
       <form @submit.prevent="patchProduct">
         <div class=" form-group row">
@@ -105,11 +105,14 @@
 import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
+import SortingGroup from '../components/_base/Sorting_group'
+
 export default {
   name: 'Product-manage',
   components: {
     Navbar,
-    Sidebar
+    Sidebar,
+    SortingGroup
   },
   data() {
     return {
@@ -119,7 +122,7 @@ export default {
       product_id: '',
       limit: '',
       page: '',
-      orderBy: 'product_created_at DESC',
+      orderBy: 'product_name ASC',
       sort: '',
       isAlert: false,
       alertMsg: '',
@@ -137,6 +140,10 @@ export default {
     this.getCategories()
   },
   methods: {
+    generateSorting(data) {
+      this.orderBy = data
+      this.get_product()
+    },
     closeModal() {
       this.$refs['edit-product-modal'].hide()
     },

@@ -77,7 +77,7 @@ export default {
           this.invoice = `#${res.data.data[0].history_invoice}`
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response)
         })
     }
   }

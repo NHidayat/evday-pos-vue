@@ -1,6 +1,7 @@
 <template>
-  <b-col cols="2" md="2" class="sidebar">
-    <ul>
+  <b-col cols="1" md="1">
+    <div class="sidebar">
+      <ul>
       <li><router-link to="/"><img src="../../assets/fork.png"></router-link></li>
       <li>
         <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
@@ -13,6 +14,7 @@
       </li>
       <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
     </ul>
+    </div>
     <div>
       <b-modal id="add-product-modal" ref="add-product-modal" hide-footer title="Add Product">
         <form @submit.prevent="addProduct">

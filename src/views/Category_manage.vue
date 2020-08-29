@@ -1,63 +1,67 @@
 <template>
   <div class="category-manage">
     <Navbar :title="title" />
-    <Sidebar />
-    <b-container>
-      <div class="main-content md-12">
-        <div class="table-section">
-          <div class="row">
-            <div class="col-6">
-              <h3>Category List</h3>
-              <b-button variant="outline-success" v-b-modal.category-modal @click="setAdd">
-                <b-icon-plus></b-icon-plus>
-                Add Catgory
-              </b-button>
-            </div>
-            <div class="col-6">
-              <select class="float-right range-select">
-                <option value="month">Sort</option>
-              </select>
+    <section class="contents">
+      <b-row>
+        <Sidebar />
+        <b-container>
+          <div class="main-content col-md-12">
+            <div class="table-section">
+              <div class="row">
+                <div class="col-6">
+                  <h3>Category List</h3>
+                  <b-button variant="outline-success" v-b-modal.category-modal @click="setAdd">
+                    <b-icon-plus></b-icon-plus>
+                    Add Catgory
+                  </b-button>
+                </div>
+                <div class="col-6">
+                  <select class="float-right range-select">
+                    <option value="month">Sort</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mt-2">
+                <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <table class="table table-responsive-sm">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in categoryList" :key="index">
+                        <td>{{ index+1 }}</td>
+                        <td>{{ item.category_name }}</td>
+                        <td>{{ item.category_created_at }}</td>
+                        <td>{{ item.category_updated_at }}</td>
+                        <td>{{ item.category_status === 1 ? 'Active' : 'Not Active' }}</td>
+                        <td>
+                          <b-button variant="outline-primary" v-b-modal.category-modal size="sm" @click="setcategory(item)">
+                            <b-icon icon="pencil"></b-icon>
+                          </b-button>
+                          <b-button variant="outline-danger" size="sm" @click="deletecategory(item)">
+                            <b-icon icon="trash"></b-icon>
+                          </b-button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="mt-2">
-            <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <table class="table table-responsive-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Category Name</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Updated</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in categoryList" :key="index">
-                    <td>{{ index+1 }}</td>
-                    <td>{{ item.category_name }}</td>
-                    <td>{{ item.category_created_at }}</td>
-                    <td>{{ item.category_updated_at }}</td>
-                    <td>{{ item.category_status === 1 ? 'Active' : 'Not Active' }}</td>
-                    <td>
-                      <b-button variant="outline-primary" v-b-modal.category-modal size="sm" @click="setcategory(item)">
-                        <b-icon icon="pencil"></b-icon>
-                      </b-button>
-                      <b-button variant="outline-danger" size="sm" @click="deletecategory(item)">
-                        <b-icon icon="trash"></b-icon>
-                      </b-button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-container>
+        </b-container>
+      </b-row>
+    </section>
     <b-modal id="category-modal" ref="category-modal" hide-footer :title="modalTitle">
       <form @submit.prevent="postCategory">
         <div class=" form-group row">

@@ -1,9 +1,7 @@
 <template>
-  <b-row align="right" class="order-group">
-    <b-col md="12" class="text-right">
+  <b-row class="order-group" align="right">
+    <b-col md="12">
       <b-form-select v-model="selected" :options="options" size="sm" class="col-md-3 my-select form-control" @change="orderProducts"></b-form-select>
-    </b-col>
-    <b-col>
     </b-col>
   </b-row>
 </template>

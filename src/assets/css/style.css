@@ -135,7 +135,7 @@ nav .cart-header h5 {
     top: 80px;
     background: #fff;
     box-shadow: -8px -1px 19px -14px rgb(0 0 0);
-    right: 5px;
+    right: 8px;
     padding: 8px 20px 5px 10px;
     border-radius: 5px;
     border-left: 10px solid #57CAD5;
@@ -191,7 +191,7 @@ nav .cart-header h5 {
 
 /*---------item-----------*/
 
-.main-content {
+/*.main-content {
     margin: 20px 0 30px 80px;
 }
 
@@ -199,7 +199,7 @@ nav .cart-header h5 {
     .main-content {
         margin: 20px 0 30px 65px;
     }
-}
+}*/
 
 .collection-item {
     width: 31.33%;
@@ -240,7 +240,14 @@ nav .cart-header h5 {
 
 @media (max-width: 480px) {
     .collection-item {
-        width: 70%;
+        width: 47%;
+    }
+
+}
+
+@media (max-width: 320px) {
+    .collection-item {
+        width: 100%;
     }
 
 }
@@ -590,6 +597,7 @@ nav .cart-header h5 {
 }
 
 .chart-section {
+    background: #fff;
     border-radius: 10px;
     padding: 20px;
     margin: 30px auto;

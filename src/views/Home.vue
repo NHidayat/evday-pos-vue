@@ -5,8 +5,9 @@
       <b-row>
         <Sidebar @updateList="get_product" />
         <div class="main-content list-menu col-md-7 col-12">
-          <div class="container">
-            <SortingGroup @generateSorting="generateSorting" />
+          <b-container>
+            <SortingGroup @generateSorting="generateSorting" class="mt-3" />
+            <b-alert variant="danger" :show="isAlert" class="mt-3">{{ alertMsg }}</b-alert>
             <div class="row">
               <b-card class="collection-item" v-for="(item, index) in products" :key="index">
                 <img v-bind:src="require(`../${item.product_image}`)" class="card-img-top" alt="...">
@@ -27,10 +28,9 @@
             <div class="mt-3">
               <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="paginationSetup" align="center"></b-pagination>
             </div>
-          </div>
+          </b-container>
         </div>
         <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" @clearCart="clearCart" />
-        <ModalItem />
       </b-row>
     </section>
   </div>
@@ -40,7 +40,6 @@ import Navbar from '../components/_base/Navbar'
 import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
 import Cart from '../components/_base/Cart'
-import ModalItem from '../components/_base/Modal_form'
 import axios from 'axios'
 export default {
   name: 'Home',
@@ -48,8 +47,7 @@ export default {
     Navbar,
     Sidebar,
     SortingGroup,
-    Cart,
-    ModalItem
+    Cart
   },
   data() {
     return {
@@ -61,8 +59,8 @@ export default {
       totalData: '',
       products: [],
       base_url: process.env.VUE_APP_BASE_URL,
-      alert: false,
-      isMsg: 'Tes',
+      isAlert: false,
+      alertMsg: 'Tes',
       isUpdate: false,
       product_id: '',
       checkoutTotal: '0',
@@ -132,16 +130,21 @@ export default {
         })
         .catch(error => {
           console.log(error)
+          this.isAlert = true
+          this.alertMsg = error.response.data.msg
         })
     },
     searchProduct(data) {
       axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
         .then(res => {
+          this.isAlert = false
           this.products = res.data.data
           this.$router.push(`?product_name=${data.product_name}`)
         })
         .catch(error => {
           console.log(error)
+          this.isAlert = true
+          this.alertMsg = error.response.data.msg
         })
     },
     clearCart(data) {
