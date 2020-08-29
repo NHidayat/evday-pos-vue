@@ -36,6 +36,9 @@
         </table>
       </div>
     </div>
+    <div>
+      <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" align="center" @change="paginationSetup"></b-pagination>
+    </div>
     <b-modal scrollable :title="invoice" id="items-modal" ref="items-modal" centered hide-footer>
       <div class="items-modal modal-body">
         <b-row class="checkout-item" v-for="(item, index) in itemsList" :key="index">
@@ -54,17 +57,26 @@ export default {
     return {
       historyList: '',
       itemsList: '',
-      invoice: ''
+      invoice: '',
+      page: 1,
+      limit: 9,
+      totalData: ''
     }
   },
   created() {
     this.getHistories()
   },
   methods: {
+    paginationSetup(data) {
+      this.page = data
+      this.getHistories()
+      this.$router.push(`?page=${this.page}`)
+    },
     getHistories() {
-      axios.get('http://127.0.0.1:3000/history')
+      axios.get(`http://127.0.0.1:3000/history?page=${this.page}&limit=${this.limit}`)
         .then(res => {
           this.historyList = res.data.data
+          this.totalData = res.data.pagination.totalData
         })
         .catch(error => {
           console.log(error)
