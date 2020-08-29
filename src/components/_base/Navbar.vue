@@ -6,13 +6,15 @@
           <div class="navigation col-md-8">
             <b-row>
               <b-col cols="1" md="1" class="menu-icon-section">
-                <img src="../../assets/menu.png" class="menu-icon">
+                <img src="../../assets/menu.png" class="menu-icon" ref="menuicon">
               </b-col>
               <b-col md="10" cols="9" class="nav-title">
                 <h4 class="text-center" v-if="!isSearch">Evday POS</h4>
                 <form v-else @submit.prevent="searchProduct">
-                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-12" v-model="form.product_name"/>
-                  <b-button type="submit" class="c-serach-btn my-primary mt-1" size="sm"><b-icon-search></b-icon-search></b-button>
+                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-12" v-model="form.product_name" />
+                  <b-button type="submit" class="c-serach-btn my-primary mt-1" size="sm">
+                    <b-icon-search></b-icon-search>
+                  </b-button>
                 </form>
               </b-col>
               <b-col cols="1" md="1" class="search-section">
@@ -30,7 +32,7 @@
           </b-col>
           <div class="cart-mobile">
             <a href="#cart-section">
-              <h5 class="text-center">Cart <span class="badge badge-cart">{{ count }}</span></h5>
+              <h5 class="text-center"><b-icon-cart></b-icon-cart><span class="badge badge-cart">{{ count }}</span></h5>
             </a>
           </div>
         </b-row>
@@ -48,7 +50,24 @@ export default {
     }
   },
   props: ['count'],
+  mounted() {
+    this.navMenu()
+  },
   methods: {
+    navMenu() {
+      const menuIcon = document.querySelector('.menu-icon')
+      const sidebar = document.querySelector('.sidebar')
+      const op = { sidebarOn: true }
+      menuIcon.addEventListener('click', () => {
+        if (op.sidebarOn === true) {
+          sidebar.style.left = '-60px'
+          op.sidebarOn = false
+        } else {
+          sidebar.style.left = '0'
+          op.sidebarOn = true
+        }
+      })
+    },
     showSearch() {
       this.isSearch = true
     },
