@@ -49,7 +49,7 @@
             <label class="col-sm-2 col-form-label">Status</label>
             <div class="col-sm-6">
               <select class="form-control" v-model="form.product_status" required>
-                <option value="" selected>Category</option>
+                <option value="" selected>Status</option>
                 <option value="0">Not active</option>
                 <option value="1">Active</option>
               </select>

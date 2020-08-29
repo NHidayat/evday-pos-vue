@@ -7,6 +7,12 @@ body {
 }
 
 /*-----additional------*/
+@media (max-width: 767px) {
+    .my-wrapper {
+        margin: 0 auto !important;
+    }
+}
+
 .semi {
     color: #cecece !important;
 }
@@ -212,14 +218,14 @@ nav .cart-header h5 {
 
 .card.collection-item {
     border: 0;
-    background-color: transparent;
+    background-color: #ffffff66;
     margin: 5px;
     box-shadow: 0 5px 11px -8px rgb(0 0 0)
 }
 
 .card.collection-item img {
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
     height: 150px;
     object-fit: cover;
 }
@@ -260,7 +266,7 @@ nav .cart-header h5 {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 160px;
+    height: 150px;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.60);
     ;
@@ -495,6 +501,10 @@ nav .cart-header h5 {
 }
 
 .checkout-modal.modal-body {
+    font-weight: 600;
+}
+
+.my-modal-body {
     font-weight: 600;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="history">
+  <div class="history" style="background: #fff">
     <Navbar :title="title" />
     <section class="contents">
       <b-row>

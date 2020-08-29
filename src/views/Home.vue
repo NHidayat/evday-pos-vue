@@ -8,21 +8,19 @@
           <b-container>
             <SortingGroup @generateSorting="generateSorting" class="mt-3" />
             <b-alert variant="danger" :show="isAlert" class="mt-3">{{ alertMsg }}</b-alert>
-            <div class="row">
-              <b-card class="collection-item" v-for="(item, index) in products" :key="index">
-                <img v-bind:src="require(`../${item.product_image}`)" class="card-img-top" alt="...">
+            <div class="row mt-3 my-wrapper">
+              <b-card :img-src="require(`../${item.product_image}`)" img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="collection-item" v-for="(item, index) in products" :key="index">
                 <div class="image-overlay" v-if="cekItemCart(item.product_id) >= 0">
                   <img src="../assets/checklist.png" class="checklist">
                 </div>
-                <div class="card-body">
+                <b-card-text>
                   <h5 class="product-name">{{ item.product_name }}</h5>
-                  <span>{{ item.category_name }}</span>
+                  <span>{{ item. category_name }}</span>
                   <h5 class="price float-right">Rp {{item.product_price}}</h5>
-                  <b-button v-if="cekItemCart(item.product_id) >= 0" :disabled="true" variant="outline-success" class="col-12" @click="addToCart(item)">Added <b-icon-check></b-icon-check>
-                  </b-button>
-                  <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart>
-                  </b-button>
-                </div>
+                </b-card-text>
+                <b-button v-if="cekItemCart(item.product_id) >= 0" :disabled="true" variant="outline-success" class="col-12" @click="addToCart(item)">Added <b-icon-check></b-icon-check>
+                </b-button>
+                <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart></b-button>
               </b-card>
             </div>
             <div class="mt-3">
