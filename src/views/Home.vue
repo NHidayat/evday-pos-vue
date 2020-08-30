@@ -23,7 +23,7 @@
                 <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart></b-button>
               </b-card>
             </div>
-            <div class="mt-3">
+            <div class="mt-3 mb-5">
               <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="paginationSetup" align="center"></b-pagination>
             </div>
           </b-container>
