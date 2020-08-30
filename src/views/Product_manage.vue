@@ -51,6 +51,9 @@
                   </table>
                 </div>
               </div>
+              <div>
+                <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" align="center" @change="paginationSetup"></b-pagination>
+              </div>
             </div>
           </div>
         </b-container>
@@ -120,8 +123,9 @@ export default {
       productList: [],
       categories: [],
       product_id: '',
-      limit: '',
-      page: '',
+      limit: '9',
+      page: '1',
+      totalData: '',
       orderBy: 'product_name ASC',
       sort: '',
       isAlert: false,
@@ -140,6 +144,11 @@ export default {
     this.getCategories()
   },
   methods: {
+    paginationSetup(data) {
+      this.page = data
+      this.get_product()
+      this.$router.push(`?page=${this.page}`)
+    },
     generateSorting(data) {
       this.orderBy = data
       this.get_product()
@@ -157,9 +166,10 @@ export default {
       })
     },
     get_product() {
-      axios.get(`http://127.0.0.1:3000/product?orderBy=${this.orderBy}`)
+      axios.get(`http://127.0.0.1:3000/product?orderBy=${this.orderBy}&page=${this.page}&limit=${this.limit}`)
         .then(res => {
           this.productList = res.data.data
+          this.totalData = res.data.pagination.totalData
         })
         .catch(error => {
           console.log(error.response)
