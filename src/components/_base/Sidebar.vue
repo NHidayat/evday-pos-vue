@@ -2,18 +2,20 @@
   <b-col cols="1" md="1">
     <div class="sidebar">
       <ul>
-      <li><router-link to="/"><img src="../../assets/fork.png"></router-link></li>
-      <li>
-        <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
-      </li>
-      <li>
-        <router-link to="/manage-product"><img src="../../assets/manage-product.png"></router-link>
-      </li>
-      <li>
-        <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
-      </li>
-      <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
-    </ul>
+        <li>
+          <router-link to="/"><img src="../../assets/fork.png"></router-link>
+        </li>
+        <li>
+          <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
+        </li>
+        <li>
+          <router-link to="/manage-product"><img src="../../assets/manage-product.png"></router-link>
+        </li>
+        <li>
+          <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
+        </li>
+        <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
+      </ul>
     </div>
     <div>
       <b-modal id="add-product-modal" ref="add-product-modal" hide-footer title="Add Product">
@@ -85,6 +87,15 @@ export default {
     this.getCategories()
   },
   methods: {
+    clearForm() {
+      this.form = {
+        product_name: '',
+        product_price: '',
+        product_image: '',
+        category_id: '',
+        product_status: ''
+      }
+    },
     makeToast(msg, variant = null, append = false) {
       this.$bvToast.toast(`${msg}`, {
         title: 'Hei',
@@ -105,6 +116,7 @@ export default {
           this.makeToast(this.isMsg, 'primary')
           this.closeModal()
           this.$emit('updateList', res.data.data)
+          this.clearForm()
         })
         .catch(error => {
           console.log(error)
