@@ -121,7 +121,7 @@ export default {
       }
     },
     get_product() {
-      axios.get(`http://127.0.0.1:3000/product?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
+      axios.get(`http://127.0.0.1:3000/product/active/beta?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
         .then(res => {
           this.products = res.data.data
           this.totalData = res.data.pagination.totalData
