@@ -1,6 +1,9 @@
 <template>
-  <div class="tile-count">
+  <div class="tile-count mt-4">
     <div class="row">
+      <div class="mt-2 col-md-12">
+        <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
+      </div>
       <div class="col-md-4">
         <div class="count-card">
           <div class="card card-pink mb-3">
@@ -48,7 +51,9 @@ export default {
     return {
       thisWeekData: '',
       todayIncome: '',
-      thisYearIncome: ''
+      thisYearIncome: '',
+      isAlert: false,
+      alertMsg: ''
     }
   },
   created() {
@@ -64,7 +69,9 @@ export default {
           this.thisYearIncome = res.data.pagination.thisYearIncome
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response)
+          this.isAlert = true
+          this.alertMsg = 'Something Wrong'
         })
     }
   }
