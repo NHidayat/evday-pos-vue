@@ -20,6 +20,7 @@
               <th scope="col">DATE</th>
               <th scope="col">ORDERS</th>
               <th scope="col">AMOUNT</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -28,9 +29,10 @@
               <td>{{ item.cashier_name }}</td>
               <td>{{ item.history_created_at }}</td>
               <td>
-                <b-button variant="outline-primary" size="sm" @click="getItems(item)" v-b-modal.items-modal>See Items</b-button>
+                {{item.items.map(v => v.product_name).join(', ') }}
               </td>
               <td>Rp {{ item.history_total }}</td>
+              <td><b-button variant="outline-primary" class="float-right" size="sm" @click="getDetail(item)" v-b-modal.items-modal>Detail</b-button></td>
             </tr>
           </tbody>
         </table>
@@ -40,10 +42,18 @@
       <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" align="center" @change="paginationSetup"></b-pagination>
     </div>
     <b-modal scrollable :title="invoice" id="items-modal" ref="items-modal" centered hide-footer>
-      <div class="items-modal modal-body">
-        <b-row class="checkout-item" v-for="(item, index) in itemsList" :key="index">
+      <div class="items-modal my-modal-body">
+        <b-row class="checkout-item" v-for="(item, index) in itemsDetail" :key="index">
           <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
-          <div class="col-6 item-price">Rp. {{ item.subtotal }}</div>
+          <div class="col-6 text-right">Rp. {{ item.subtotal }}</div>
+        </b-row>
+        <b-row>
+          <b-col>Tax</b-col>
+          <b-col class="text-right">Rp {{ tax}}</b-col>
+        </b-row>
+        <b-row>
+          <b-col>Total</b-col>
+          <b-col class="text-right">Rp {{ totalBuy }}</b-col>
         </b-row>
       </div>
     </b-modal>
@@ -56,7 +66,10 @@ export default {
   data() {
     return {
       historyList: '',
-      itemsList: '',
+      itemsDetail: '',
+      itemList: '',
+      tax: '',
+      totalBuy: '',
       invoice: '',
       page: 1,
       limit: 9,
@@ -82,10 +95,12 @@ export default {
           console.log(error)
         })
     },
-    getItems(data) {
+    getDetail(data) {
       axios.get(`http://127.0.0.1:3000/history/${data.history_id}`)
         .then(res => {
-          this.itemsList = res.data.data[0].items
+          this.tax = res.data.data[0].history_ppn
+          this.totalBuy = res.data.data[0].history_total
+          this.itemsDetail = res.data.data[0].items
           this.invoice = `#${res.data.data[0].history_invoice}`
         })
         .catch(error => {
