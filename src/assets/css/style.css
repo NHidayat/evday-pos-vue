@@ -23,7 +23,7 @@ body {
 
 .my-select {
     border: 0 !important;
-    border-radius: 10px !important;
+    /*border-radius: 10px !important;*/
     cursor: pointer;
 }
 
@@ -220,7 +220,7 @@ nav .cart-header h5 {
     border: 0;
     background-color: #ffffff66;
     margin: 5px;
-    box-shadow: 0 5px 11px -8px rgb(0 0 0)
+    box-shadow: 0 4px 8px -8px rgb(0 0 0)
 }
 
 .card.collection-item img {
