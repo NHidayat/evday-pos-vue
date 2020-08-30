@@ -11,8 +11,8 @@
       </div>
     </div>
     <div class="row">
-      {{data}}
-      <line-chart :data="chartData"></line-chart>
+      <!-- {{dataIndex}} {{dataValue}} -->
+      <line-chart :data="data" thousands="," prefix="Rp " :round="2"></line-chart>
     </div>
   </div>
 </template>
@@ -23,10 +23,9 @@ export default {
   data() {
     return {
       data: [],
-      // chartData: { '2020-08-26T17:00:00.000Z': 8790100, '2020-08-27T17:00:00.000Z': 790100 }
       chartData: [
-        { name: 'This Week', data: { '2017-01-01': 125000, '2017-01-02': 302676, '2017-01-03': 250012 } },
-        { name: 'Last Week', data: { '2017-01-01': 312000, '2017-01-02': 125069, '2017-01-03': 450000 } }
+        { name: 'This Week', data: [] },
+        { name: 'Last Week', data: [['2020-08-26T17:00:00.000Z', 90100], ['2020-08-27T17:00:00.000Z', 790100], ['2020-08-28T17:00:00.000Z', 990100]] }
       ]
     }
   },
@@ -37,7 +36,8 @@ export default {
     getHistories() {
       axios.get('http://127.0.0.1:3000/history')
         .then(res => {
-          this.data = res.data.pagination.dailyIncome
+          res.data.pagination.dailyIncome.map(v => this.chartData[0].data.push([v.date, v.total]))
+          res.data.pagination.dailyIncome.map(v => this.data.push([v.date, v.total]))
         })
         .catch(error => {
           console.log(error)
