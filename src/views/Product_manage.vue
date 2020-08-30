@@ -162,9 +162,9 @@ export default {
           this.productList = res.data.data
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response)
           this.isAlert = true
-          this.alertMsg = error.response.data.msg
+          this.alertMsg = 'Something Wrong'
         })
     },
     getCategories() {

@@ -58,7 +58,7 @@ export default {
       products: [],
       base_url: process.env.VUE_APP_BASE_URL,
       isAlert: false,
-      alertMsg: 'Tes',
+      alertMsg: '',
       isUpdate: false,
       product_id: '',
       checkoutTotal: '0',
@@ -127,9 +127,9 @@ export default {
           this.totalData = res.data.pagination.totalData
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response)
           this.isAlert = true
-          this.alertMsg = error.response.data.msg
+          this.alertMsg = 'Someting Wrong'
         })
     },
     searchProduct(data) {
