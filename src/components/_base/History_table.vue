@@ -31,7 +31,7 @@
               <td>
                 {{item.items.map(v => v.product_name).join(', ') }}
               </td>
-              <td>Rp {{ item.history_total }}</td>
+              <td>Rp {{ formatN(item.history_total) }}</td>
               <td><b-button variant="outline-primary" class="float-right" size="sm" @click="getDetail(item)" v-b-modal.items-modal>Detail</b-button></td>
             </tr>
           </tbody>
@@ -45,15 +45,15 @@
       <div class="items-modal my-modal-body">
         <b-row class="checkout-item" v-for="(item, index) in itemsDetail" :key="index">
           <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
-          <div class="col-6 text-right">Rp. {{ item.subtotal }}</div>
+          <div class="col-6 text-right">Rp. {{ formatN(item.subtotal) }}</div>
         </b-row>
         <b-row>
           <b-col>Tax</b-col>
-          <b-col class="text-right">Rp {{ tax}}</b-col>
+          <b-col class="text-right">Rp {{ formatN(tax) }}</b-col>
         </b-row>
         <b-row>
           <b-col>Total</b-col>
-          <b-col class="text-right">Rp {{ totalBuy }}</b-col>
+          <b-col class="text-right">Rp {{ formatN(totalBuy) }}</b-col>
         </b-row>
       </div>
     </b-modal>
@@ -80,6 +80,9 @@ export default {
     this.getHistories()
   },
   methods: {
+    formatN(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
     paginationSetup(data) {
       this.page = data
       this.getHistories()

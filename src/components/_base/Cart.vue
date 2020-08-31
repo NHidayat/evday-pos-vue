@@ -26,7 +26,7 @@
                   <input type="text" name="" class="form-control qty" v-model="item.qty" min="1" max="100">
                   <b-button class="btn-qty-min" @click="incItemQty(item.product_id)"><span>&plus;</span></b-button>
                 </div>
-                <div class="item-price"><span>Rp {{ item.subtotal }}</span></div>
+                <div class="item-price"><span>Rp {{ formatN(item.subtotal) }}</span></div>
               </div>
             </div>
           </div>
@@ -35,10 +35,10 @@
           <div class="cart-total">
             <b-row>
               <b-col md="12" class="mb-2">
-                <small class="float-right">Cart Total: Rp. {{ cartSubtotal }}* + Tax 10% : Rp. {{ tax }}*</small>
+                <small class="float-right">Cart Total: Rp. {{ formatN(cartSubtotal) }}* + Tax 10% : Rp. {{ formatN(tax) }}*</small>
               </b-col>
               <b-col>Total</b-col>
-              <b-col><span class="float-right">Rp. {{ checkoutTotal }}*</span></b-col>
+              <b-col><span class="float-right">Rp. {{ formatN(checkoutTotal) }}*</span></b-col>
             </b-row>
           </div>
           <div class="button-section">
@@ -61,18 +61,18 @@
       <div class="checkout-modal modal-body">
         <b-row class="checkout-item" v-for="(item, index) in resCartItems" :key="index">
           <div class="col-6 item-name">{{ item.product_name }} {{ item.qty }}x</div>
-          <div class="col-6 item-price">Rp. {{ item.subtotal }}</div>
+          <div class="col-6 item-price">Rp. {{ formatN(item.subtotal) }}</div>
         </b-row>
         <b-row class="checkout-item">
           <div class="col-6 item-name">Subtotal</div>
-          <div class="col-6 item-price">Rp. {{ resCartSubtotal }}</div>
+          <div class="col-6 item-price">Rp. {{ formatN(resCartSubtotal) }}</div>
         </b-row>
         <b-row class="checkout-item">
           <div class="col-6 item-name">Ppn 10%</div>
-          <div class="col-6 item-price">Rp. {{ resTax }}</div>
+          <div class="col-6 item-price">Rp. {{ formatN(resTax) }}</div>
         </b-row>
         <b-row class="checkout-total">
-          <div class="col-12" align="right">Total: Rp. {{ resTotal }}</div>
+          <div class="col-12" align="right">Total: Rp. {{ formatN(resTotal) }}</div>
         </b-row>
         <b-row class="checkout-item">
           <div class="col-md-12 item-name">Payment: Cash</div>
@@ -105,6 +105,9 @@ export default {
     }
   },
   methods: {
+    formatN(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
     showModal() {
       this.$refs['checkout-modal'].show()
     },

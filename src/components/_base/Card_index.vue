@@ -9,7 +9,7 @@
           <div class="card card-pink mb-3">
             <div class="card-body">
               <small class="card-title">Today’s Income</small>
-              <h5 class="card-value">Rp. {{ todayIncome }} </h5>
+              <h5 class="card-value">Rp. {{ formatN(todayIncome) }} </h5>
               <small class="card-text">+2% Yesterday</small>
               <div class="round-overlay"></div>
             </div>
@@ -33,7 +33,7 @@
           <div class="card card-purple mb-3">
             <div class="card-body">
               <small class="card-title">This Year’s Income</small>
-              <h5 class="card-value">Rp. {{ thisYearIncome }} </h5>
+              <h5 class="card-value">Rp. {{ formatN(thisYearIncome) }} </h5>
               <small class="card-text">+10% Last Year</small>
               <div class="round-overlay"></div>
             </div>
@@ -60,6 +60,9 @@ export default {
     this.getHistories()
   },
   methods: {
+    formatN(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
     getHistories() {
       axios.get('http://127.0.0.1:3000/history')
         .then(res => {

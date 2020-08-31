@@ -16,7 +16,7 @@
                 <b-card-text>
                   <h5 class="product-name">{{ item.product_name }}</h5>
                   <span>{{ item. category_name }}</span>
-                  <h5 class="price float-right">Rp {{item.product_price}}</h5>
+                  <h5 class="price float-right">Rp {{ formatN(item.product_price) }}</h5>
                 </b-card-text>
                 <b-button v-if="cekItemCart(item.product_id) >= 0" :disabled="true" variant="outline-success" class="col-12" @click="addToCart(item)">Added <b-icon-check></b-icon-check>
                 </b-button>
@@ -74,6 +74,9 @@ export default {
     this.generateCheckoutData()
   },
   methods: {
+    formatN(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
     paginationSetup(data) {
       this.page = data
       this.get_product()
