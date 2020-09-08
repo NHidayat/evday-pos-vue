@@ -6,6 +6,11 @@
           <router-link to="/"><img src="../../assets/fork.png"></router-link>
         </li>
         <li>
+          <a class="logout" @click="handleLogout">
+            Logout
+          </a>
+        </li>
+        <li>
           <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
         </li>
         <li>
@@ -68,6 +73,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -87,6 +93,10 @@ export default {
     this.getCategories()
   },
   methods: {
+    ...mapActions({ handleLogout: 'logout' }),
+    // handleLogout() {
+    //   console.log('logout')
+    // },
     clearForm() {
       this.form = {
         product_name: '',
@@ -137,3 +147,9 @@ export default {
 }
 
 </script>
+<style scoped>
+.logout {
+  cursor: pointer;
+}
+
+</style>
