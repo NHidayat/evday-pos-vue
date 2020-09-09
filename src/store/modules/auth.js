@@ -36,6 +36,50 @@ export default {
       localStorage.removeItem('token')
       context.commit('delUser')
       router.push('/login')
+    },
+    register(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.post('http://127.0.0.1:3000/users/register', payload)
+          .then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error.response)
+          })
+      })
+    },
+    interceptorRequest(context) {
+      console.log('interceptorRequest work')
+      axios.interceptors.request.use(function(config) {
+        config.headers.Authorization = `Bearer ${context.state.token}`
+        // Do something before request is sent
+        return config
+      }, function(error) {
+        // Do something with request error
+        return Promise.reject(error)
+      })
+    },
+    interceptorResponse(context) {
+      axios.interceptors.response.use(function(response) {
+        // Any status code that lie within the range of 2xx cause this function to trigger
+        // Do something with response data
+        return response
+      }, function(error) {
+        console.log(error.response)
+        if (error.response.status === 403) {
+          if (error.response.data.msg === 'invalid token' || error.response.data.msg === 'invalid signature') {
+            localStorage.removeItem('token')
+            context.commit('delUser')
+            router.push('/login')
+            alert('Maaf token anda salah. Anda tidak bisa lanjut kehalaman ini')
+          } else if (!error.response.data.msg === 'invalid token' || !error.response.data.msg === 'invalid signature') {
+            localStorage.removeItem('token')
+            context.commit('delUser')
+            router.push('/login')
+            alert('Maaf token session anda telah habis')
+          }
+        }
+        return Promise.reject(error)
+      })
     }
   },
   getters: {

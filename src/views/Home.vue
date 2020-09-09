@@ -9,18 +9,20 @@
             <SortingGroup @generateSorting="generateSorting" class="mt-3" />
             <b-alert variant="danger" :show="isAlert" class="mt-3">{{ alertMsg }}</b-alert>
             <div class="row mt-3 my-wrapper">
-              <b-card :img-src="require(`../${item.product_image}`)" img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="collection-item" v-for="(item, index) in products" :key="index">
+              <b-card img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="collection-item" v-for="(item, index) in products" :key="index">
                 <div class="image-overlay" v-if="cekItemCart(item.product_id) >= 0">
                   <img src="../assets/checklist.png" class="checklist">
                 </div>
                 <b-card-text>
                   <h5 class="product-name">{{ item.product_name }}</h5>
+                  <span>{{ item.product_image }}</span>
                   <span>{{ item. category_name }}</span>
                   <h5 class="price float-right">Rp {{ formatN(item.product_price) }}</h5>
                 </b-card-text>
                 <b-button v-if="cekItemCart(item.product_id) >= 0" :disabled="true" variant="outline-success" class="col-12" @click="addToCart(item)">Added <b-icon-check></b-icon-check>
                 </b-button>
-                <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart></b-button>
+                <b-button v-else class="my-primary col-12" @click="addToCart(item)">Add <b-icon-cart></b-icon-cart>
+                </b-button>
               </b-card>
             </div>
             <div class="mt-3 mb-5">
@@ -39,7 +41,9 @@ import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
 import Cart from '../components/_base/Cart'
 import axios from 'axios'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
+  title: 'Home - Evday POS',
   name: 'Home',
   components: {
     Navbar,
@@ -52,18 +56,18 @@ export default {
       cartCount: 0,
       cart: [],
       cartSubtotal: '',
-      page: 1,
-      limit: 6,
-      totalData: '',
-      products: [],
+      // page: 1,
+      // limit: 6,
+      // totalData: '',
+      // products: [],
       base_url: process.env.VUE_APP_BASE_URL,
       isAlert: false,
       alertMsg: '',
       isUpdate: false,
       product_id: '',
       checkoutTotal: '0',
-      tax: '0',
-      selectedSorting: 'product_name ASC'
+      tax: '0'
+      // selectedSorting: 'product_name ASC'
     }
   },
   created() {
@@ -73,12 +77,18 @@ export default {
     this.getCartSubtotal()
     this.generateCheckoutData()
   },
+  computed: {
+    ...mapGetters({ products: 'setProducts', limit: 'setLimit', page: 'setPage', totalData: 'setTotalData', selectedSorting: 'setSelectedSorting' })
+  },
   methods: {
+    ...mapActions({ get_product: 'getProduct' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
+    ...mapMutations(['setPage']),
     paginationSetup(data) {
-      this.page = data
+      // this.page = data
+      this.setPage(data)
       this.get_product()
       this.$router.push(`?page=${this.page}`)
     },
@@ -123,18 +133,18 @@ export default {
         this.cartCount += 1
       }
     },
-    get_product() {
-      axios.get(`http://127.0.0.1:3000/product/active/beta?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
-        .then(res => {
-          this.products = res.data.data
-          this.totalData = res.data.pagination.totalData
-        })
-        .catch(error => {
-          console.log(error.response)
-          this.isAlert = true
-          this.alertMsg = 'Someting Wrong'
-        })
-    },
+    // get_product() {
+    // axios.get(`http://127.0.0.1:3000/product/active/beta?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
+    //   .then(res => {
+    //     this.products = res.data.data
+    //     this.totalData = res.data.pagination.totalData
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response)
+    //     this.isAlert = true
+    //     this.alertMsg = 'Someting Wrong'
+    //   })
+    // },
     searchProduct(data) {
       axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
         .then(res => {

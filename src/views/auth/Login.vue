@@ -27,6 +27,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+  title: 'Login - Evday POS',
   name: 'Login',
   data() {
     return {
@@ -46,7 +47,6 @@ export default {
       this.isLoading = true
       this.login(this.form)
         .then(result => {
-          console.log(result)
           this.$router.push('/')
         }).catch(error => {
           console.log(error)

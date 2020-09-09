@@ -8,7 +8,7 @@
             <span class="cform-subtitle">Register</span>
           </div>
           <div class="cform-group">
-            <input type="email" v-model="form.user_name" class="cform-control" placeholder="Username" required />
+            <input type="text" v-model="form.user_name" class="cform-control" placeholder="Username" required />
             <input type="email" v-model="form.user_email" class="cform-control" placeholder="Email" required />
             <input type="password" v-model="form.user_password" class="cform-control" placeholder="Password" required />
           </div>
@@ -29,6 +29,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+  title: 'Register - Evday POS',
   name: 'Login',
   data() {
     return {
@@ -49,14 +50,14 @@ export default {
       this.isLoading = true
       this.register(this.form)
         .then(result => {
-          console.log(result)
-          this.$router.push('/')
+          this.alertMsg = result.data.msg + ', Please Login'
+          this.isAlert = true
+          this.isLoading = false
+          this.onReset()
         }).catch(error => {
-          console.log(error)
           this.alertMsg = error.data.msg
           this.isAlert = true
           this.isLoading = false
-          console.log(this.isAlert)
         })
     },
     onReset() {

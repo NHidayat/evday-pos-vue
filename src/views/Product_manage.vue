@@ -36,7 +36,8 @@
                         <td>{{ item.product_name }}</td>
                         <td>{{ item.product_image }}</td>
                         <td>{{ item.category_name }}</td>
-                        <td>Rp {{ formatN(item.product_price) }}</td>
+                        <!-- <td>Rp {{ formatN(item.product_price) }}</td> -->
+                        <td>Rp </td>
                         <td>{{ item.product_status === 1 ? 'Active' : 'Not Active' }}</td>
                         <td>
                           <b-button variant="outline-primary" size="sm" @click="setProduct(item)" v-b-modal.edit-product-modal>

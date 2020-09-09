@@ -34,7 +34,7 @@
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">Image</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" v-model="form.product_image" required />
+              <input type="file" @change="handleUpload" class="form-control" required />
             </div>
           </div>
           <div class="form-group row">
@@ -93,7 +93,7 @@ export default {
     this.getCategories()
   },
   methods: {
-    ...mapActions({ handleLogout: 'logout' }),
+    ...mapActions({ handleLogout: 'logout', postProduct: 'postProduct', getProduct: 'getProduct' }),
     // handleLogout() {
     //   console.log('logout')
     // },
@@ -118,21 +118,43 @@ export default {
     closeModal() {
       this.$refs['add-product-modal'].hide()
     },
+    handleUpload(event) {
+      console.log(event.target.files[0])
+      this.form.product_image = event.target.files[0]
+    },
     addProduct() {
       // console.log(this.form)
-      axios.post('http://127.0.0.1:3000/product', this.form)
+      const data = new FormData()
+      data.append('product_name', this.form.product_name)
+      data.append('product_price', this.form.product_price)
+      data.append('product_image', this.form.product_image)
+      data.append('category_id', this.form.category_id)
+      data.append('product_status', this.form.product_status)
+      this.postProduct(data)
         .then(res => {
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.closeModal()
-          this.$emit('updateList', res.data.data)
+          // this.$emit('updateList', res.data.data)
+          this.getProduct()
           this.clearForm()
-        })
-        .catch(error => {
-          console.log(error)
+        }).catch(error => {
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
+      // axios.post('http://127.0.0.1:3000/product', data)
+      //   .then(res => {
+      //     this.isMsg = res.data.msg
+      //     this.makeToast(this.isMsg, 'primary')
+      //     this.closeModal()
+      //     this.$emit('updateList', res.data.data)
+      //     this.clearForm()
+      //   })
+      //   .catch(error => {
+      //     console.log(error)
+      //     this.isMsg = error.response.data.msg
+      //     this.makeToast(this.isMsg, 'danger')
+      //   })
     },
     getCategories() {
       axios.get('http://127.0.0.1:3000/category')
