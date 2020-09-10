@@ -6,16 +6,15 @@
         <Sidebar @updateList="get_product" />
         <div class="main-content list-menu col-md-7 col-12">
           <b-container>
-            <SortingGroup @generateSorting="generateSorting" class="mt-3" />
+            <SortingGroup class="mt-3" />
             <b-alert variant="danger" :show="isAlert" class="mt-3">{{ alertMsg }}</b-alert>
             <div class="row mt-3 my-wrapper">
-              <b-card img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="collection-item" v-for="(item, index) in products" :key="index">
+              <b-card :img-src="api_url+item.product_image" img-alt="Image" img-top tag="article" style="max-width: 20rem;" class="collection-item" v-for="(item, index) in products" :key="index">
                 <div class="image-overlay" v-if="cekItemCart(item.product_id) >= 0">
                   <img src="../assets/checklist.png" class="checklist">
                 </div>
                 <b-card-text>
                   <h5 class="product-name">{{ item.product_name }}</h5>
-                  <span>{{ item.product_image }}</span>
                   <span>{{ item. category_name }}</span>
                   <h5 class="price float-right">Rp {{ formatN(item.product_price) }}</h5>
                 </b-card-text>
@@ -56,18 +55,13 @@ export default {
       cartCount: 0,
       cart: [],
       cartSubtotal: '',
-      // page: 1,
-      // limit: 6,
-      // totalData: '',
-      // products: [],
-      base_url: process.env.VUE_APP_BASE_URL,
+      api_url: process.env.VUE_APP_API_URL,
       isAlert: false,
       alertMsg: '',
       isUpdate: false,
       product_id: '',
       checkoutTotal: '0',
       tax: '0'
-      // selectedSorting: 'product_name ASC'
     }
   },
   created() {
@@ -78,24 +72,18 @@ export default {
     this.generateCheckoutData()
   },
   computed: {
-    ...mapGetters({ products: 'setProducts', limit: 'setLimit', page: 'setPage', totalData: 'setTotalData', selectedSorting: 'setSelectedSorting' })
+    ...mapGetters({ products: 'setProducts', limit: 'setLimit', page: 'setPage', totalData: 'setTotalData' })
   },
   methods: {
     ...mapActions({ get_product: 'getProduct' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    ...mapMutations(['setPage']),
+    ...mapMutations(['setPage', 'setSorting']),
     paginationSetup(data) {
-      // this.page = data
       this.setPage(data)
       this.get_product()
       this.$router.push(`?page=${this.page}`)
-    },
-    generateSorting(data) {
-      this.selectedSorting = data
-      this.$router.push(`?orderBy=${data}`)
-      this.get_product()
     },
     generateCheckoutData() {
       this.tax = this.cartSubtotal * (10 / 100)
@@ -133,18 +121,6 @@ export default {
         this.cartCount += 1
       }
     },
-    // get_product() {
-    // axios.get(`http://127.0.0.1:3000/product/active/beta?page=${this.page}&limit=${this.limit}&orderBy=${this.selectedSorting}`)
-    //   .then(res => {
-    //     this.products = res.data.data
-    //     this.totalData = res.data.pagination.totalData
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response)
-    //     this.isAlert = true
-    //     this.alertMsg = 'Someting Wrong'
-    //   })
-    // },
     searchProduct(data) {
       axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
         .then(res => {

@@ -34,7 +34,7 @@
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">Image</label>
             <div class="col-sm-10">
-              <input type="file" @change="handleUpload" class="form-control" required />
+              <input type="file" @change="handleUpload" required /> <small>Max. 1MB</small>
             </div>
           </div>
           <div class="form-group row">

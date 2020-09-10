@@ -16,17 +16,18 @@ export default {
     },
     setPage(state, payload) {
       state.page = payload
+    },
+    setSorting(state, payload) {
+      state.selectedSorting = payload
     }
   },
   actions: {
     getProduct(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://127.0.0.1:3000/product/active/beta?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
+        axios.get(`${process.env.VUE_APP_API_URL}product/active/beta?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
             context.commit('setProducts', res.data.data)
             context.commit('setTotalData', res.data.pagination.totalData)
-            // this.products = res.data.data
-            // this.totalData = res.data.pagination.totalData
           }).catch(error => {
             console.log(error.response)
             // this.isAlert = true
@@ -50,7 +51,6 @@ export default {
   },
   getters: {
     setProducts(state) {
-      console.log(state.products)
       return state.products
     },
     setTotalData(state) {

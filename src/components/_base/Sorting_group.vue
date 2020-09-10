@@ -6,24 +6,31 @@
   </b-row>
 </template>
 <script>
+import { mapMutations, mapActions } from 'vuex'
 export default {
   name: 'Sorting-Group',
-  // props: ['orderSelected'],
   data() {
     return {
       selected: 'product_name ASC',
       options: [
-        { value: 'product_name ASC', text: 'Product Name (asc)' },
-        { value: 'product_name DESC', text: 'Product Name (desc)' },
+        { value: 'product_name ASC', text: 'Product Name A-Z' },
+        { value: 'product_name DESC', text: 'Product Name Z-A' },
         { value: 'product_created_at DESC', text: 'Latest Product' },
         { value: 'product_price DESC', text: 'Highest Price' },
         { value: 'product_price ASC', text: 'Lowest Price' }
       ]
     }
   },
+  computed: {
+
+  },
   methods: {
+    ...mapActions({ get_product: 'getProduct' }),
+    ...mapMutations(['setSorting']),
     orderProducts(data) {
-      this.$emit('generateSorting', data)
+      this.setSorting(data)
+      this.$router.push(`?orderBy=${data}`)
+      this.get_product()
     }
   }
 }
