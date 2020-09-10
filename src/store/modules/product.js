@@ -5,7 +5,9 @@ export default {
     limit: 9,
     page: 1,
     selectedSorting: 'product_name ASC',
-    totalData: ''
+    totalData: '',
+    isAlert: false,
+    alertMsg: 'Tes'
   },
   mutations: {
     setProducts(state, payload) {
@@ -19,6 +21,12 @@ export default {
     },
     setSorting(state, payload) {
       state.selectedSorting = payload
+    },
+    setAlert(state, payload) {
+      state.istAlert = payload
+    },
+    setAlertMsg(state, payload) {
+      state.alertMsg = payload
     }
   },
   actions: {
@@ -26,10 +34,31 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_API_URL}product/active/beta?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
-            context.commit('setProducts', res.data.data)
-            context.commit('setTotalData', res.data.pagination.totalData)
+            console.log(res)
+            context.commit('setProducts', res.data.data.result)
+            context.commit('setTotalData', res.data.data.pagination.totalData)
           }).catch(error => {
+            console.log(error)
             console.log(error.response)
+            // this.isAlert = true
+            // this.alertMsg = 'Someting Wrong'
+          })
+      })
+    },
+    getAllProduct(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_API_URL}product?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
+          .then(res => {
+            console.log(res)
+            context.commit('setProducts', res.data.data.result)
+            context.commit('setTotalData', res.data.data.pagination.totalData)
+            resolve(res)
+          }).catch(error => {
+            console.log(error)
+            console.log(error.response)
+            context.commit('setAlert', true)
+            context.commit('setAlertMsg', 'Somtehing Wrong')
+            reject(error.response)
             // this.isAlert = true
             // this.alertMsg = 'Someting Wrong'
           })
@@ -38,6 +67,21 @@ export default {
     postProduct(context, payload) {
       return new Promise((resolve, reject) => {
         axios.post('http://127.0.0.1:3000/product', payload)
+          .then(res => {
+            console.log(res)
+            resolve(res)
+          })
+          .catch(error => {
+            console.log(error)
+            reject(error)
+          })
+      })
+    },
+    updateProducts(context, payload) {
+      console.log(payload.product_id)
+      console.log(payload.form)
+      return new Promise((resolve, reject) => {
+        axios.patch(`http://127.0.0.1:3000/product/${payload.product_id}`, payload.form)
           .then(res => {
             console.log(res)
             resolve(res)
@@ -61,9 +105,6 @@ export default {
     },
     setPage(state) {
       return state.page
-    },
-    setSelectedSorting(state) {
-      return state.selectedSorting
     }
   }
 }

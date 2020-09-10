@@ -6,11 +6,6 @@
           <router-link to="/"><img src="../../assets/fork.png"></router-link>
         </li>
         <li>
-          <a class="logout" @click="handleLogout">
-            Logout
-          </a>
-        </li>
-        <li>
           <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
         </li>
         <li>
@@ -20,6 +15,9 @@
           <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
         </li>
         <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
+        <li>
+          <a class="logout" @click="handleLogout"><img src="../../assets/logout-icon.png" alt=""></a>
+        </li>
       </ul>
     </div>
     <div>
@@ -135,26 +133,12 @@ export default {
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.closeModal()
-          // this.$emit('updateList', res.data.data)
           this.getProduct()
           this.clearForm()
         }).catch(error => {
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
-      // axios.post('http://127.0.0.1:3000/product', data)
-      //   .then(res => {
-      //     this.isMsg = res.data.msg
-      //     this.makeToast(this.isMsg, 'primary')
-      //     this.closeModal()
-      //     this.$emit('updateList', res.data.data)
-      //     this.clearForm()
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //     this.isMsg = error.response.data.msg
-      //     this.makeToast(this.isMsg, 'danger')
-      //   })
     },
     getCategories() {
       axios.get('http://127.0.0.1:3000/category')

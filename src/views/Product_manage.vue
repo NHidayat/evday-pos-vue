@@ -3,18 +3,18 @@
     <Navbar :title="title" />
     <section class="contents">
       <b-row>
-        <Sidebar @updateList="get_product" />
+        <Sidebar @updateList="get_products" />
         <b-container>
           <div class="main-content col-md-12">
             <div class="table-section">
               <div class="row">
                 <div class="col-md-12">
-                  <h3>Product List</h3>
+                  <h3>Product List {{ tes }}</h3>
                   <SortingGroup @generateSorting="generateSorting" />
                 </div>
               </div>
               <div class="mt-2">
-                <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
+                <!-- <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert> -->
               </div>
               <div class="row">
                 <div class="col-md-12">
@@ -71,7 +71,7 @@
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Image</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" v-model="form.product_image" required />
+            <input type="file" @change="handleFile" />
           </div>
         </div>
         <div class="form-group row">
@@ -110,7 +110,7 @@ import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
-
+import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'Product-manage',
   components: {
@@ -121,16 +121,8 @@ export default {
   data() {
     return {
       title: 'Manage Product',
-      productList: [],
       categories: [],
       product_id: '',
-      limit: '9',
-      page: '1',
-      totalData: '',
-      orderBy: 'product_name ASC',
-      sort: '',
-      isAlert: false,
-      alertMsg: '',
       form: {
         product_name: '',
         product_price: '',
@@ -141,21 +133,32 @@ export default {
     }
   },
   created() {
-    this.get_product()
+    this.get_products()
     this.getCategories()
   },
+  computed: {
+    // ...mapState(['isAlert']),
+    ...mapState({ tes: 'alertMsg' }),
+    ...mapGetters({
+      productList: 'setProducts',
+      limit: 'setLimit',
+      page: 'setPage',
+      totalData: 'setTotalData'
+    })
+  },
   methods: {
+    ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     paginationSetup(data) {
       this.page = data
-      this.get_product()
+      this.get_products()
       this.$router.push(`?page=${this.page}`)
     },
     generateSorting(data) {
       this.orderBy = data
-      this.get_product()
+      this.get_products()
     },
     closeModal() {
       this.$refs['edit-product-modal'].hide()
@@ -168,18 +171,6 @@ export default {
         variant: variant,
         solid: true
       })
-    },
-    get_product() {
-      axios.get(`http://127.0.0.1:3000/product?orderBy=${this.orderBy}&page=${this.page}&limit=${this.limit}`)
-        .then(res => {
-          this.productList = res.data.data
-          this.totalData = res.data.pagination.totalData
-        })
-        .catch(error => {
-          console.log(error.response)
-          this.isAlert = true
-          this.alertMsg = 'Something Wrong'
-        })
     },
     getCategories() {
       axios.get('http://127.0.0.1:3000/category')
@@ -200,14 +191,29 @@ export default {
       }
       this.product_id = data.product_id
     },
+    handleFile(e) {
+      console.log(e.target.files[0])
+      this.form.product_image = e.target.files[0]
+    },
     patchProduct() {
-      axios.patch(`http://127.0.0.1:3000/product/${this.product_id}`, this.form)
+      const data = new FormData()
+      data.append('product_name', this.form.product_name)
+      data.append('product_price', this.form.product_price)
+      data.append('category_id', this.form.category_id)
+      data.append('product_status', this.form.product_status)
+      data.append('product_image', this.form.product_image)
+      const setData = {
+        product_id: this.product_id,
+        form: data
+      }
+      // axios.patch(`http://127.0.0.1:3000/product/${this.product_id}`, this.form)
+      this.updateProducts(setData)
         .then(res => {
           this.products = res.data.data
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.closeModal()
-          this.get_product()
+          this.get_products()
         })
         .catch(error => {
           console.log(error)
@@ -222,7 +228,7 @@ export default {
           .then(res => {
             this.isMsg = res.data.msg
             this.makeToast(this.isMsg, 'primary')
-            this.get_product()
+            this.get_products()
           })
           .catch(error => {
             console.log(error)

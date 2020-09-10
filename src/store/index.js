@@ -12,9 +12,7 @@ export default new Vuex.Store({
     Product,
     Cart
   },
-  state: {
-    name: 'Dayat'
-  },
+  state: {},
   mutations: {},
   actions: {},
   getters: {}
