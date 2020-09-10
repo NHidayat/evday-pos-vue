@@ -32,7 +32,9 @@
           </b-col>
           <div class="cart-mobile">
             <a href="#cart-section">
-              <h5 class="text-center"><b-icon-cart></b-icon-cart><span class="badge badge-cart">{{ count }}</span></h5>
+              <h5 class="text-center">
+                <b-icon-cart></b-icon-cart><span class="badge badge-cart">{{ count }}</span>
+              </h5>
             </a>
           </div>
         </b-row>
@@ -41,6 +43,7 @@
   </header>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Navbar',
   data() {
@@ -49,9 +52,11 @@ export default {
       form: { product_name: '' }
     }
   },
-  props: ['count'],
   mounted() {
     this.navMenu()
+  },
+  computed: {
+    ...mapGetters({ count: 'cartCount' })
   },
   methods: {
     navMenu() {

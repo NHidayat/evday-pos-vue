@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <Navbar :count="cartCount" @searchProduct="searchProduct" />
+    <Navbar @searchProduct="searchProduct" />
     <section class="contents">
       <b-row>
         <Sidebar @updateList="get_product" />
@@ -29,7 +29,7 @@
             </div>
           </b-container>
         </div>
-        <Cart :items="cart" :cartSubtotal="cartSubtotal" :checkoutTotal="checkoutTotal" :tax="tax" @changeItemQty="updateCartQty" @clearCart="clearCart" />
+        <Cart :items="cart" />
       </b-row>
     </section>
   </div>
@@ -52,62 +52,44 @@ export default {
   },
   data() {
     return {
-      cartCount: 0,
-      cart: [],
-      cartSubtotal: '',
       api_url: process.env.VUE_APP_API_URL,
       isAlert: false,
       alertMsg: '',
       isUpdate: false,
-      product_id: '',
-      checkoutTotal: '0',
-      tax: '0'
+      product_id: ''
     }
   },
   created() {
     this.get_product()
   },
-  updated() {
-    this.getCartSubtotal()
-    this.generateCheckoutData()
-  },
   computed: {
-    ...mapGetters({ products: 'setProducts', limit: 'setLimit', page: 'setPage', totalData: 'setTotalData' })
+    ...mapGetters({
+      products: 'setProducts',
+      limit: 'setLimit',
+      page: 'setPage',
+      totalData: 'setTotalData',
+      cart: 'cart'
+    })
   },
   methods: {
-    ...mapActions({ get_product: 'getProduct' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    ...mapMutations(['setPage', 'setSorting']),
+    ...mapActions({ get_product: 'getProduct' }),
+    ...mapMutations(['setPage', 'generateCheckoutData']),
     paginationSetup(data) {
       this.setPage(data)
       this.get_product()
       this.$router.push(`?page=${this.page}`)
     },
-    generateCheckoutData() {
-      this.tax = this.cartSubtotal * (10 / 100)
-      this.checkoutTotal = this.tax + this.cartSubtotal
-    },
-    updateCartQty(data) {
-      this.cartCount += data
-    },
     cekItemCart(id) {
       return this.cart.findIndex(obj => obj.product_id === id)
-    },
-    getCartSubtotal() {
-      if (this.cart.length > 0) {
-        this.cartSubtotal = this.cart.map(item => item.subtotal).reduce((a, b) => a + b)
-      } else {
-        this.cartSubtotal = 0
-      }
     },
     addToCart(data) {
       const cekIndex = this.cart.findIndex(obj => obj.product_id === data.product_id)
       if (cekIndex >= 0) {
         this.cart[cekIndex].qty += 1
         this.cart[cekIndex].subtotal += this.cart[cekIndex].product_price
-        this.cartCount += 1
       } else {
         const setCart = {
           product_id: data.product_id,
@@ -118,8 +100,9 @@ export default {
           subtotal: data.product_price
         }
         this.cart.push(setCart)
-        this.cartCount += 1
       }
+      this.generateCheckoutData()
+      console.log(this.cart)
     },
     searchProduct(data) {
       axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
@@ -137,11 +120,9 @@ export default {
     clearCart(data) {
       if (data === true) {
         this.cart = []
-        this.cartCount = 0
       } else {
         if (confirm('Are you sure canceled this order?')) {
           this.cart = []
-          this.cartCount = 0
         }
       }
     }

@@ -13,7 +13,7 @@
         <div class="a" v-for="(item, index) in items" :key="index">
           <div class="cart-item">
             <div class="item-image">
-              <img :src="require(`../../${ item.product_image }`)">
+              <img :src="api_url+item.product_image">
             </div>
             <div class="item-detail">
               <div class="item-name">
@@ -90,9 +90,9 @@
 </template>
 <script>
 import axios from 'axios'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Cart',
-  props: ['items', 'cartSubtotal', 'checkoutTotal', 'tax'],
   data() {
     return {
       isMsg: '',
@@ -101,10 +101,20 @@ export default {
       resCartItems: [],
       resCartSubtotal: '',
       resTax: '',
-      resTotal: ''
+      resTotal: '',
+      api_url: process.env.VUE_APP_API_URL
     }
   },
+  computed: {
+    ...mapGetters({
+      items: 'cart',
+      cartSubtotal: 'cartSubtotal',
+      checkoutTotal: 'checkoutTotal',
+      tax: 'tax'
+    })
+  },
   methods: {
+    ...mapMutations(['generateCheckoutData', 'clearCart']),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
@@ -131,7 +141,7 @@ export default {
       } else {
         this.items[getIndex].subtotal -= this.items[getIndex].product_price
       }
-      this.$emit('changeItemQty', qty)
+      this.generateCheckoutData()
     },
     incItemQty(id) {
       this.getIndexPush(id, 1)
@@ -142,10 +152,16 @@ export default {
     deleteCartItem(data) {
       const getIndex = this.items.findIndex(obj => obj.product_id === data.product_id)
       this.items.splice(getIndex, 1)
-      this.$emit('changeItemQty', -data.qty)
+      this.generateCheckoutData()
     },
-    emptyCart(finish) {
-      this.$emit('clearCart', finish)
+    emptyCart(data) {
+      if (data === true) {
+        this.clearCart()
+      } else {
+        if (confirm('Are you sure canceled this order?')) {
+          this.clearCart()
+        }
+      }
     },
     postOrder() {
       const cart = { items: this.items }
