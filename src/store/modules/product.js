@@ -5,9 +5,7 @@ export default {
     limit: 9,
     page: 1,
     selectedSorting: 'product_name ASC',
-    totalData: '',
-    isAlert: false,
-    alertMsg: 'Tes'
+    totalData: ''
   },
   mutations: {
     setProducts(state, payload) {
@@ -23,7 +21,7 @@ export default {
       state.selectedSorting = payload
     },
     setAlert(state, payload) {
-      state.istAlert = payload
+      state.isAlert = payload
     },
     setAlertMsg(state, payload) {
       state.alertMsg = payload
@@ -49,7 +47,6 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_API_URL}product?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
-            console.log(res)
             context.commit('setProducts', res.data.data.result)
             context.commit('setTotalData', res.data.data.pagination.totalData)
             resolve(res)
@@ -78,8 +75,6 @@ export default {
       })
     },
     updateProducts(context, payload) {
-      console.log(payload.product_id)
-      console.log(payload.form)
       return new Promise((resolve, reject) => {
         axios.patch(`http://127.0.0.1:3000/product/${payload.product_id}`, payload.form)
           .then(res => {
@@ -88,6 +83,17 @@ export default {
           })
           .catch(error => {
             console.log(error)
+            reject(error)
+          })
+      })
+    },
+    deleteProduct(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`http://127.0.0.1:3000/product/${payload.product_id}`)
+          .then(res => {
+            resolve(res)
+          })
+          .catch(error => {
             reject(error)
           })
       })
