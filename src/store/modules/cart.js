@@ -11,10 +11,10 @@ export default {
     clearCart(state) {
       Vue.$confirm({
         title: 'Are you sure?',
-        message: 'Are you sure you want to cancel this order?',
+        message: 'Cancel this order?',
         button: {
           yes: 'Yes',
-          no: 'Cancel'
+          no: 'No'
         },
         callback: confirm => {
           if (confirm) {

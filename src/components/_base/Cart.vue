@@ -43,7 +43,7 @@
           </div>
           <div class="button-section">
             <a href="#" class="btn my-primary" data-toggle="modal" @click="postOrder">Checkout</a>
-            <a href="#" class="btn my-danger" @click="emptyCart">Cancel</a>
+            <a href="#" class="btn my-danger" @click="clearCart">Cancel</a>
           </div>
         </div>
       </div>
@@ -153,15 +153,6 @@ export default {
       const getIndex = this.items.findIndex(obj => obj.product_id === data.product_id)
       this.items.splice(getIndex, 1)
       this.generateCheckoutData()
-    },
-    emptyCart(data) {
-      if (data === true) {
-        this.clearCart()
-      } else {
-        if (confirm('Are you sure canceled this order?')) {
-          this.clearCart()
-        }
-      }
     },
     postOrder() {
       const cart = { items: this.items }
