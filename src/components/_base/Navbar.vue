@@ -9,6 +9,7 @@
                 <img src="../../assets/menu.png" class="menu-icon" ref="menuicon">
               </b-col>
               <b-col md="10" cols="9" class="nav-title">
+                <small class="float-right">{{ user.user_email }}</small>
                 <h4 class="text-center" v-if="!isSearch">Evday POS</h4>
                 <form v-else @submit.prevent="searchProduct">
                   <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-12" v-model="form.product_name" />
@@ -26,9 +27,7 @@
             </b-row>
           </div>
           <b-col md="4" class="cart-header">
-            <h5 class="text-center">
-              Cart <span class="badge badge-cart">{{ count }}</span>
-            </h5>
+            <h5  class="text-center">Cart <span class="badge badge-cart">{{ count }}</span></h5>
           </b-col>
           <div class="cart-mobile">
             <a href="#cart-section">
@@ -56,7 +55,7 @@ export default {
     this.navMenu()
   },
   computed: {
-    ...mapGetters({ count: 'cartCount' })
+    ...mapGetters({ count: 'cartCount', user: 'user' })
   },
   methods: {
     navMenu() {

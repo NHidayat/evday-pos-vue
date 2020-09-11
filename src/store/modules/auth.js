@@ -10,7 +10,6 @@ export default {
     setUser(state, payload) {
       state.user = payload
       state.token = payload.token
-      // console.log(payload)
     },
     delUser(state) {
       state.user = {}
@@ -85,6 +84,9 @@ export default {
   getters: {
     isLogin(state) {
       return state.token !== null
+    },
+    user(state) {
+      return state.user
     }
   }
 }

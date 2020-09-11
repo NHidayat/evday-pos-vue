@@ -5,16 +5,18 @@
         <li>
           <router-link to="/"><img src="../../assets/fork.png"></router-link>
         </li>
-        <li>
+        <li v-if="user.user_role === 1">
           <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
         </li>
-        <li>
+        <li v-if="user.user_role === 1">
           <router-link to="/manage-product"><img src="../../assets/manage-product.png"></router-link>
         </li>
-        <li>
+        <li v-if="user.user_role === 1">
           <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
         </li>
-        <li><a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a></li>
+        <li v-if="user.user_role === 1">
+          <a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a>
+        </li>
         <li>
           <a class="logout" @click="handleLogout"><img src="../../assets/logout-icon.png" alt=""></a>
         </li>
@@ -71,7 +73,7 @@
 </template>
 <script>
 import axios from 'axios'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -90,11 +92,15 @@ export default {
   created() {
     this.getCategories()
   },
+  computed: {
+    ...mapGetters({ user: 'user' })
+  },
   methods: {
-    ...mapActions({ handleLogout: 'logout', postProduct: 'postProduct', getProduct: 'getProduct' }),
-    // handleLogout() {
-    //   console.log('logout')
-    // },
+    ...mapActions({
+      handleLogout: 'logout',
+      postProduct: 'postProduct',
+      getProduct: 'getProduct'
+    }),
     clearForm() {
       this.form = {
         product_name: '',
