@@ -9,7 +9,7 @@
             <div class="table-section">
               <div class="row">
                 <div class="col-md-12">
-                  <h3>Product List {{ tes }}</h3>
+                  <h3>Product List</h3>
                   <SortingGroup @generateSorting="generateSorting" />
                 </div>
               </div>
@@ -36,14 +36,13 @@
                         <td>{{ item.product_name }}</td>
                         <td>{{ item.product_image }}</td>
                         <td>{{ item.category_name }}</td>
-                        <!-- <td>Rp {{ formatN(item.product_price) }}</td> -->
-                        <td>Rp </td>
+                        <td>Rp {{ formatN(item.product_price) }}</td>
                         <td>{{ item.product_status === 1 ? 'Active' : 'Not Active' }}</td>
                         <td>
                           <b-button variant="outline-primary" size="sm" @click="setProduct(item)" v-b-modal.edit-product-modal>
                             <b-icon icon="pencil"></b-icon>
                           </b-button>
-                          <b-button variant="outline-danger" size="sm" @click="deleteProduct(item)">
+                          <b-button variant="outline-danger" size="sm" @click="delete_product(item)">
                             <b-icon icon="trash"></b-icon>
                           </b-button>
                         </td>
@@ -110,8 +109,9 @@ import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
+  title: 'Manage Product - Evday POS',
   name: 'Product-manage',
   components: {
     Navbar,
@@ -135,10 +135,9 @@ export default {
   created() {
     this.get_products()
     this.getCategories()
+    console.log(this.productList)
   },
   computed: {
-    // ...mapState(['isAlert']),
-    ...mapState({ tes: 'alertMsg' }),
     ...mapGetters({
       productList: 'setProducts',
       limit: 'setLimit',
@@ -147,12 +146,13 @@ export default {
     })
   },
   methods: {
-    ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts' }),
+    ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts', deleteProduct: 'deleteProduct' }),
+    ...mapMutations(['setPage']),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     paginationSetup(data) {
-      this.page = data
+      this.setPage(data)
       this.get_products()
       this.$router.push(`?page=${this.page}`)
     },
@@ -192,7 +192,6 @@ export default {
       this.product_id = data.product_id
     },
     handleFile(e) {
-      console.log(e.target.files[0])
       this.form.product_image = e.target.files[0]
     },
     patchProduct() {
@@ -206,7 +205,6 @@ export default {
         product_id: this.product_id,
         form: data
       }
-      // axios.patch(`http://127.0.0.1:3000/product/${this.product_id}`, this.form)
       this.updateProducts(setData)
         .then(res => {
           this.products = res.data.data
@@ -221,21 +219,30 @@ export default {
           this.makeToast(this.isMsg, 'danger')
         })
     },
-    deleteProduct(data) {
-      this.product_id = data.product_id
-      if (confirm(`Are Sure delete the "${data.product_name}"?`)) {
-        axios.delete(`http://127.0.0.1:3000/product/${this.product_id}`)
-          .then(res => {
-            this.isMsg = res.data.msg
-            this.makeToast(this.isMsg, 'primary')
-            this.get_products()
-          })
-          .catch(error => {
-            console.log(error)
-            this.isMsg = error.response.data.msg
-            this.makeToast(this.isMsg, 'danger')
-          })
-      }
+    delete_product(data) {
+      this.$confirm({
+        message: `Are you sure want to delete "${data.product_name}"?`,
+        button: {
+          no: 'Cancel',
+          yes: 'Yes'
+        },
+        callback: confirm => {
+          if (confirm) {
+            this.deleteProduct(data)
+              .then(res => {
+                this.products = res.data.data
+                this.isMsg = res.data.msg
+                this.makeToast(this.isMsg, 'primary')
+                this.get_products()
+              })
+              .catch(error => {
+                console.log(error)
+                this.isMsg = error.response.data.msg
+                this.makeToast(this.isMsg, 'danger')
+              })
+          }
+        }
+      })
     }
   }
 }
