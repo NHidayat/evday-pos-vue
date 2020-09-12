@@ -1,23 +1,66 @@
 import axios from 'axios'
 export default {
   state: {
-    histories: []
+    histories: [],
+    dailyIncome: [],
+    todayIncome: 0,
+    thisWeekIncome: 0,
+    thisYearIncome: 0,
+    page: 1,
+    limit: 10,
+    totalData: 0
   },
   mutations: {
-    sethistories(state, payload) {
+    setTotalData(state, payload) {
+      state.totalData = payload
+    },
+    setPage(state, payload) {
+      state.page = payload
+    },
+    setHistories(state, payload) {
       state.histories = payload
+    },
+    setDailyIncome(state, payload) {
+      state.dailyIncome = payload
+    },
+    setTodayIncome(state, payload) {
+      state.todayIncome = payload
+    },
+    setThisWeekIncome(state, payload) {
+      state.thisWeekIncome = payload
+    },
+    setThisYearIncome(state, payload) {
+      state.thisYearIncome = payload
     }
   },
   actions: {
-    gethistories(context, payload) {
+    getHistories(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get('http://127.0.0.1:3000/history')
+        axios.get(`http://127.0.0.1:3000/history?page=${context.state.page}&limit=${context.state.limit}`)
           .then(res => {
-            context.commit('sethistories', res.data.data)
+            context.commit('setHistories', res.data.data)
+            context.commit('setTotalData', res.data.pagination.totalData)
             resolve(res)
           })
           .catch(error => {
-            console.log(error)
+            console.log(error.response)
+            reject(error)
+          })
+      })
+    },
+    getHistoriesIncome(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get('http://127.0.0.1:3000/history/histories-income/alpha')
+          .then(res => {
+            const dailyData = []
+            res.data.data.dailyIncome.map(v => dailyData.push([v.date, v.total]))
+            context.commit('setDailyIncome', dailyData)
+            context.commit('setTodayIncome', res.data.data.todayIncome)
+            context.commit('setThisWeekIncome', res.data.data.thisWeekIncome)
+            context.commit('setThisYearIncome', res.data.data.thisYearIncome)
+            resolve(res)
+          })
+          .catch(error => {
             reject(error)
           })
       })
@@ -37,6 +80,27 @@ export default {
   getters: {
     histories(state) {
       return state.histories
+    },
+    getDailyIncome(state) {
+      return state.dailyIncome
+    },
+    getTodayIncome(state) {
+      return state.todayIncome
+    },
+    getThisWeekIncome(state) {
+      return state.thisWeekIncome
+    },
+    getThisYearIncome(state) {
+      return state.thisYearIncome
+    },
+    getTotalData(state) {
+      return state.totalData
+    },
+    getLimit(state) {
+      return state.limit
+    },
+    getPage(state) {
+      return state.page
     }
   }
 }

@@ -44,38 +44,25 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Card-Index',
   data() {
     return {
-      thisWeekData: '',
-      todayIncome: '',
-      thisYearIncome: '',
       isAlert: false,
       alertMsg: ''
     }
   },
   created() {
-    this.getHistories()
+    this.getHistoriesIncome()
+  },
+  computed: {
+    ...mapGetters({ todayIncome: 'getTodayIncome', thisWeekData: 'getThisWeekIncome', thisYearIncome: 'getThisYearIncome', daily: 'getDailyIncome' })
   },
   methods: {
+    ...mapActions({ getHistoriesIncome: 'getHistoriesIncome' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
-    getHistories() {
-      axios.get('http://127.0.0.1:3000/history')
-        .then(res => {
-          this.historyList = res.data.data
-          this.thisWeekData = res.data.pagination.dataThisWeek
-          this.todayIncome = res.data.pagination.todayIncome
-          this.thisYearIncome = res.data.pagination.thisYearIncome
-        })
-        .catch(error => {
-          console.log(error.response)
-          this.isAlert = true
-          this.alertMsg = 'Something Wrong'
-        })
     }
   }
 }

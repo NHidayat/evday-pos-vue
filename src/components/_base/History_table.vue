@@ -32,13 +32,16 @@
                 {{item.items.map(v => v.product_name).join(', ') }}
               </td>
               <td>Rp {{ formatN(item.history_total) }}</td>
-              <td><b-button variant="outline-primary" class="float-right" size="sm" @click="getDetail(item)" v-b-modal.items-modal>Detail</b-button></td>
+              <td>
+                <b-button variant="outline-primary" class="float-right" size="sm" @click="getDetail(item)" v-b-modal.items-modal>Detail</b-button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div>
+      <div>total:{{ totalData }} | page: {{page}} | limit {{limit}}</div>
       <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" align="center" @change="paginationSetup"></b-pagination>
     </div>
     <b-modal scrollable :title="invoice" id="items-modal" ref="items-modal" centered hide-footer>
@@ -61,42 +64,34 @@
 </template>
 <script>
 import axios from 'axios'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'HistoryTable',
   data() {
     return {
-      historyList: '',
       itemsDetail: '',
       itemList: '',
       tax: '',
       totalBuy: '',
-      invoice: '',
-      page: 1,
-      limit: 9,
-      totalData: ''
+      invoice: ''
     }
   },
   created() {
     this.getHistories()
   },
+  computed: {
+    ...mapGetters({ historyList: 'histories', page: 'getPage', limit: 'getLimit', totalData: 'getTotalData' })
+  },
   methods: {
+    ...mapActions({ getHistories: 'getHistories' }),
+    ...mapMutations(['setPage']),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     paginationSetup(data) {
-      this.page = data
+      this.setPage(data)
       this.getHistories()
       this.$router.push(`?page=${this.page}`)
-    },
-    getHistories() {
-      axios.get(`http://127.0.0.1:3000/history?page=${this.page}&limit=${this.limit}`)
-        .then(res => {
-          this.historyList = res.data.data
-          this.totalData = res.data.pagination.totalData
-        })
-        .catch(error => {
-          console.log(error)
-        })
     },
     getDetail(data) {
       axios.get(`http://127.0.0.1:3000/history/${data.history_id}`)

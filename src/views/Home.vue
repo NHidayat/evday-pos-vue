@@ -25,7 +25,7 @@
               </b-card>
             </div>
             <div class="mt-3 mb-5">
-              <b-pagination model="1" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="paginationSetup" align="center"></b-pagination>
+              <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" @change="paginationSetup" align="center"></b-pagination>
             </div>
           </b-container>
         </div>

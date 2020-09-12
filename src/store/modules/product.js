@@ -34,8 +34,8 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_API_URL}product/active/beta?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
-            context.commit('setProducts', res.data.data.result)
-            context.commit('setTotalData', res.data.data.pagination.totalData)
+            context.commit('setProducts', res.data.data)
+            context.commit('setTotalData', res.data.pagination.totalData)
             resolve(res)
           })
           .catch(error => {
@@ -49,8 +49,8 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_API_URL}product?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
-            context.commit('setProducts', res.data.data.result)
-            context.commit('setTotalData', res.data.data.pagination.totalData)
+            context.commit('setProducts', res.data.data)
+            context.commit('setTotalData', res.data.pagination.totalData)
             resolve(res)
           }).catch(error => {
             context.commit('setIsAlert', true)
