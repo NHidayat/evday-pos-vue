@@ -53,7 +53,6 @@ export default {
           this.alertMsg = error.data.msg
           this.isAlert = true
           this.isLoading = false
-          console.log(this.isAlert)
         })
     },
     onReset() {

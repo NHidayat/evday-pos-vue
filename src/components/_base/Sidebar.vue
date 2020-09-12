@@ -15,6 +15,9 @@
           <router-link to="/manage-category"><img src="../../assets/manage-category.png"></router-link>
         </li>
         <li v-if="user.user_role === 1">
+          <router-link to="/manage-users"><img src="../../assets/users-icon.png"></router-link>
+        </li>
+        <li v-if="user.user_role === 1">
           <a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a>
         </li>
         <li>

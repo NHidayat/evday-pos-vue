@@ -63,7 +63,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'HistoryTable',
@@ -83,7 +82,7 @@ export default {
     ...mapGetters({ historyList: 'histories', page: 'getPage', limit: 'getLimit', totalData: 'getTotalData' })
   },
   methods: {
-    ...mapActions({ getHistories: 'getHistories' }),
+    ...mapActions(['getHistories', 'getHistoryDetail']),
     ...mapMutations(['setPage']),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -94,7 +93,7 @@ export default {
       this.$router.push(`?page=${this.page}`)
     },
     getDetail(data) {
-      axios.get(`http://127.0.0.1:3000/history/${data.history_id}`)
+      this.getHistoryDetail(data)
         .then(res => {
           this.tax = res.data.data[0].history_ppn
           this.totalBuy = res.data.data[0].history_total

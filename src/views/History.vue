@@ -22,6 +22,7 @@ import CardIndex from '../components/_base/Card_index'
 import Chart from '../components/_base/Chart'
 import HistoryData from '../components/_base/History_table'
 export default {
+  title: 'History - Evday POS',
   name: 'History',
   components: {
     Navbar,

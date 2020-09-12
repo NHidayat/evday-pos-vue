@@ -12,7 +12,7 @@
             <input type="email" v-model="form.user_email" class="cform-control" placeholder="Email" required />
             <input type="password" v-model="form.user_password" class="cform-control" placeholder="Password" required />
           </div>
-          <b-alert variant="warning" :show="isAlert">{{ alertMsg }}</b-alert>
+          <b-alert :variant="alertVariant" :show="isAlert">{{ alertMsg }}</b-alert>
           <div class="cform-button">
             <b-button type="submit" class="my-primary">
               <b-spinner small v-show="isLoading"></b-spinner> <span>Register</span>
@@ -40,7 +40,8 @@ export default {
       },
       isLoading: false,
       isAlert: false,
-      alertMsg: ''
+      alertMsg: '',
+      alertVariant: ''
     }
   },
   computed: {},
@@ -50,13 +51,15 @@ export default {
       this.isLoading = true
       this.register(this.form)
         .then(result => {
-          this.alertMsg = result.data.msg + ', Please Login'
+          this.alertVariant = 'primary'
+          this.alertMsg = result.data.msg
           this.isAlert = true
           this.isLoading = false
           this.onReset()
         }).catch(error => {
           this.alertMsg = error.data.msg
           this.isAlert = true
+          this.alertVariant = 'danger'
           this.isLoading = false
         })
     },

@@ -6,6 +6,7 @@ import ManageProduct from '../views/Product_manage.vue'
 import ManageCotegory from '../views/Category_manage.vue'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
+import ManageUsers from '../views/Users_manage.vue'
 import store from '../store'
 
 Vue.use(VueRouter)
@@ -46,6 +47,12 @@ const routes = [
     name: 'Register',
     component: Register,
     meta: { requiresVisitor: true }
+  },
+  {
+    path: '/manage-users',
+    name: 'Manage Users',
+    component: ManageUsers,
+    meta: { requiresAuth: true }
   },
   {
     path: '/about',

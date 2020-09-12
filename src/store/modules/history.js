@@ -43,7 +43,6 @@ export default {
             resolve(res)
           })
           .catch(error => {
-            console.log(error.response)
             reject(error)
           })
       })
@@ -58,6 +57,17 @@ export default {
             context.commit('setTodayIncome', res.data.data.todayIncome)
             context.commit('setThisWeekIncome', res.data.data.thisWeekIncome)
             context.commit('setThisYearIncome', res.data.data.thisYearIncome)
+            resolve(res)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    },
+    getHistoryDetail(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get(`http://127.0.0.1:3000/history/${payload.history_id}`)
+          .then(res => {
             resolve(res)
           })
           .catch(error => {
