@@ -53,8 +53,6 @@ export default {
   data() {
     return {
       api_url: process.env.VUE_APP_API_URL,
-      isAlert: false,
-      alertMsg: '',
       isUpdate: false,
       product_id: ''
     }
@@ -68,7 +66,9 @@ export default {
       limit: 'setLimit',
       page: 'setPage',
       totalData: 'setTotalData',
-      cart: 'cart'
+      cart: 'cart',
+      isAlert: 'isAlert',
+      alertMsg: 'alertMsg'
     })
   },
   methods: {
@@ -102,7 +102,6 @@ export default {
         this.cart.push(setCart)
       }
       this.generateCheckoutData()
-      console.log(this.cart)
     },
     searchProduct(data) {
       axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)

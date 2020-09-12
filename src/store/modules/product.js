@@ -5,7 +5,9 @@ export default {
     limit: 9,
     page: 1,
     selectedSorting: 'product_name ASC',
-    totalData: ''
+    totalData: '',
+    isAlert: false,
+    alertMsg: ''
   },
   mutations: {
     setProducts(state, payload) {
@@ -20,7 +22,7 @@ export default {
     setSorting(state, payload) {
       state.selectedSorting = payload
     },
-    setAlert(state, payload) {
+    setIsAlert(state, payload) {
       state.isAlert = payload
     },
     setAlertMsg(state, payload) {
@@ -32,14 +34,14 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.VUE_APP_API_URL}product/active/beta?page=${context.state.page}&limit=${context.state.limit}&orderBy=${context.state.selectedSorting}`)
           .then(res => {
-            console.log(res)
             context.commit('setProducts', res.data.data.result)
             context.commit('setTotalData', res.data.data.pagination.totalData)
-          }).catch(error => {
-            console.log(error)
-            console.log(error.response)
-            // this.isAlert = true
-            // this.alertMsg = 'Someting Wrong'
+            resolve(res)
+          })
+          .catch(error => {
+            reject(error)
+            context.commit('setIsAlert', true)
+            context.commit('setAlertMsg', 'Something Wrong')
           })
       })
     },
@@ -51,13 +53,9 @@ export default {
             context.commit('setTotalData', res.data.data.pagination.totalData)
             resolve(res)
           }).catch(error => {
-            console.log(error)
-            console.log(error.response)
-            context.commit('setAlert', true)
-            context.commit('setAlertMsg', 'Somtehing Wrong')
-            reject(error.response)
-            // this.isAlert = true
-            // this.alertMsg = 'Someting Wrong'
+            context.commit('setIsAlert', true)
+            context.commit('setAlertMsg', 'Something Wrong')
+            reject(error)
           })
       })
     },
@@ -65,11 +63,9 @@ export default {
       return new Promise((resolve, reject) => {
         axios.post('http://127.0.0.1:3000/product', payload)
           .then(res => {
-            console.log(res)
             resolve(res)
           })
           .catch(error => {
-            console.log(error)
             reject(error)
           })
       })
@@ -78,11 +74,9 @@ export default {
       return new Promise((resolve, reject) => {
         axios.patch(`http://127.0.0.1:3000/product/${payload.product_id}`, payload.form)
           .then(res => {
-            console.log(res)
             resolve(res)
           })
           .catch(error => {
-            console.log(error)
             reject(error)
           })
       })
@@ -111,6 +105,12 @@ export default {
     },
     setPage(state) {
       return state.page
+    },
+    isAlert(state) {
+      return state.isAlert
+    },
+    alertMsg(state) {
+      return state.alertMsg
     }
   }
 }

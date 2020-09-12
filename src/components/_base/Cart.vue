@@ -42,7 +42,7 @@
             </b-row>
           </div>
           <div class="button-section">
-            <a href="#" class="btn my-primary" data-toggle="modal" @click="postOrder">Checkout</a>
+            <a href="#" class="btn my-primary" data-toggle="modal" @click="post_order">Checkout</a>
             <a href="#" class="btn my-danger" @click="clearCart">Cancel</a>
           </div>
         </div>
@@ -89,8 +89,7 @@
   </aside>
 </template>
 <script>
-import axios from 'axios'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
   name: 'Cart',
   data() {
@@ -110,11 +109,13 @@ export default {
       items: 'cart',
       cartSubtotal: 'cartSubtotal',
       checkoutTotal: 'checkoutTotal',
-      tax: 'tax'
+      tax: 'tax',
+      user: 'user'
     })
   },
   methods: {
     ...mapMutations(['generateCheckoutData', 'clearCart']),
+    ...mapActions({ postOrder: 'postHistory' }),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
@@ -154,9 +155,13 @@ export default {
       this.items.splice(getIndex, 1)
       this.generateCheckoutData()
     },
-    postOrder() {
-      const cart = { items: this.items }
-      axios.post('http://127.0.0.1:3000/history', cart)
+    post_order() {
+      const data = {
+        cashier_name: this.user.user_name,
+        tes: '122',
+        items: this.items
+      }
+      this.postOrder(data)
         .then(res => {
           this.isMsg = res.data.msg
           this.invoice = res.data.data.history_invoice
@@ -167,7 +172,7 @@ export default {
           this.resTotal = res.data.data.history_total
           this.makeToast(this.isMsg, 'primary')
           this.showModal()
-          this.emptyCart(true)
+          this.clearCart(true)
         })
         .catch(error => {
           console.log(error)

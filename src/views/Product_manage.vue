@@ -14,7 +14,7 @@
                 </div>
               </div>
               <div class="mt-2">
-                <!-- <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert> -->
+                <b-alert variant="danger" :show="isAlert">{{ alertMsg }}</b-alert>
               </div>
               <div class="row">
                 <div class="col-md-12">
@@ -135,14 +135,15 @@ export default {
   created() {
     this.get_products()
     this.getCategories()
-    console.log(this.productList)
   },
   computed: {
     ...mapGetters({
       productList: 'setProducts',
       limit: 'setLimit',
       page: 'setPage',
-      totalData: 'setTotalData'
+      totalData: 'setTotalData',
+      isAlert: 'isAlert',
+      alertMsg: 'alertMsg'
     })
   },
   methods: {
