@@ -8,20 +8,24 @@ export default {
     cartCount: 0
   },
   mutations: {
-    clearCart(state) {
-      Vue.$confirm({
-        title: 'Are you sure?',
-        message: 'Cancel this order?',
-        button: {
-          yes: 'Yes',
-          no: 'No'
-        },
-        callback: confirm => {
-          if (confirm) {
-            state.cart = []
+    clearCart(state, payload = false) {
+      if (payload === true) {
+        state.cart = []
+      } else {
+        Vue.$confirm({
+          title: 'Are you sure?',
+          message: 'Cancel this order?',
+          button: {
+            yes: 'Yes',
+            no: 'No'
+          },
+          callback: confirm => {
+            if (confirm) {
+              state.cart = []
+            }
           }
-        }
-      })
+        })
+      }
     },
     generateCheckoutData(state) {
       if (state.cart.length > 0) {
