@@ -62,8 +62,8 @@
         </b-container>
       </b-row>
     </section>
-    <b-modal id="category-modal" ref="category-modal" hide-footer :title="modalTitle">
-      <form @submit.prevent="postCategory">
+    <b-modal id="category-modal" ref="category-modal" centered hide-footer :title="modalTitle">
+      <form @submit.prevent="post_category">
         <div class=" form-group row">
           <label class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-10">
@@ -81,7 +81,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-          <button type="button" class="btn my-primary col-md-3" @click="patchCategory" v-show="isUpdate">Update</button>
+          <button type="button" class="btn my-primary col-md-3" @click="patch_category" v-show="isUpdate">Update</button>
           <button type="submit" class="btn my-primary col-md-3" v-show="!isUpdate">Add</button>
         </div>
       </form>
@@ -89,10 +89,11 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
+import { mapActions, mapGetters } from 'vuex'
 export default {
+  title: 'Manage Category - Evday POS',
   name: 'category-manage',
   components: {
     Navbar,
@@ -101,7 +102,6 @@ export default {
   data() {
     return {
       title: 'Manage Category',
-      categoryList: [],
       modalTitle: '',
       isUpdate: false,
       isAlert: false,
@@ -115,7 +115,15 @@ export default {
   created() {
     this.getCategories()
   },
+  computed: {
+    ...mapGetters({ categoryList: 'categories' })
+  },
   methods: {
+    ...mapActions({
+      getCategories: 'getCategories',
+      postCategory: 'postCategory',
+      patchCategory: 'patchCategory'
+    }),
     clearForm() {
       this.form = {
         category_name: '',
@@ -135,25 +143,13 @@ export default {
         solid: true
       })
     },
-    getCategories() {
-      axios.get('http://127.0.0.1:3000/category')
-        .then(res => {
-          this.categoryList = res.data.data
-        })
-        .catch(error => {
-          console.log(error)
-          this.isAlert = true
-          this.alertMsg = error.response.data.msg
-        })
-    },
     setAdd() {
       this.modalTitle = 'Add Category'
       this.isUpdate = false
     },
-    postCategory() {
-      axios.post('http://127.0.0.1:3000/category', this.form)
+    post_category() {
+      this.postCategory(this.form)
         .then(res => {
-          this.categorys = res.data.data
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.getCategories()
@@ -175,8 +171,12 @@ export default {
       }
       this.category_id = data.category_id
     },
-    patchCategory() {
-      axios.patch(`http://127.0.0.1:3000/category/${this.category_id}`, this.form)
+    patch_category() {
+      const setData = {
+        category_id: this.category_id,
+        form: this.form
+      }
+      this.patchCategory(setData)
         .then(res => {
           this.categorys = res.data.data
           this.isMsg = res.data.msg
@@ -197,9 +197,19 @@ export default {
         category_name: data.category_name,
         category_status: '0'
       }
-      if (confirm(`For now the status of "${data.category_name}" will only be changed to inactive`)) {
-        this.patchCategory()
-      }
+      this.$confirm({
+        title: 'Confirmation',
+        message: `For now the status of "${data.category_name}" will be change to inactive`,
+        button: {
+          no: 'Cancel',
+          yes: 'OK'
+        },
+        callback: confirm => {
+          if (confirm) {
+            this.patch_category()
+          }
+        }
+      })
     }
   }
 }
