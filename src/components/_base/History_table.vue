@@ -1,13 +1,8 @@
 <template>
   <div class="table-section">
     <div class="row">
-      <div class="col-6">
+      <div class="col-12">
         <h3>Recent Order</h3>
-      </div>
-      <div class="col-6">
-        <select class="float-right range-select">
-          <option value="month">Today</option>
-        </select>
       </div>
     </div>
     <div class="row">
@@ -41,7 +36,6 @@
       </div>
     </div>
     <div>
-      <div>total:{{ totalData }} | page: {{page}} | limit {{limit}}</div>
       <b-pagination v-model="page" :total-rows="totalData" :per-page="limit" aria-controls="my-table" align="center" @change="paginationSetup"></b-pagination>
     </div>
     <b-modal scrollable :title="invoice" id="items-modal" ref="items-modal" centered hide-footer>

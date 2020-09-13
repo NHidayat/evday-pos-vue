@@ -49,7 +49,7 @@ export default {
     },
     getHistoriesIncome(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get(process.env.VUE_APP_API_URL + 'history/histories-income/alpha')
+        axios.get(process.env.VUE_APP_API_URL + `history/histories-income/alpha?period=${payload}`)
           .then(res => {
             const dailyData = []
             res.data.data.dailyIncome.map(v => dailyData.push([v.date, v.total]))
