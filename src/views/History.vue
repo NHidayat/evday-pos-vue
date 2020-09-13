@@ -4,7 +4,7 @@
     <section class="contents">
       <b-row>
         <Sidebar />
-        <div class="main-content hitory-contents col-md-11">
+        <div class="main-content hitory-contents col-md-10">
           <b-container>
             <CardIndex />
             <Chart />

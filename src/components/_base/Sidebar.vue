@@ -20,9 +20,6 @@
         <li v-if="user.user_role === 1">
           <a href="#add-item" v-b-modal.add-product-modal><img src="../../assets/add.png"></a>
         </li>
-        <li>
-          <a class="logout" @click="handleLogout"><img src="../../assets/logout-icon.png" alt=""></a>
-        </li>
       </ul>
     </div>
     <div>
@@ -100,7 +97,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      handleLogout: 'logout',
       postProduct: 'postProduct',
       getProduct: 'getProduct'
     }),

@@ -10,7 +10,14 @@
               </b-col>
               <b-col md="10" cols="9" class="nav-title">
                 <div v-if="!isSearch">
-                  <span class="float-right">{{ user.user_name }}</span>
+                  <div class="float-right">
+                    <b-dropdown variant="outline" >
+                      <template v-slot:button-content>
+                        <b-icon icon="person-circle"></b-icon> <span>{{ user.user_name }}</span>
+                      </template>
+                      <b-dropdown-item @click="logout"><b-icon icon="door-open"></b-icon> Logout</b-dropdown-item>
+                    </b-dropdown>
+                  </div>
                   <h4 class="text-center">Evday POS</h4>
                 </div>
                 <b-nav-form @submit.prevent="searchProduct" class="float-right mt-3" v-else>
@@ -41,7 +48,7 @@
   </header>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Navbar',
   data() {
@@ -57,6 +64,7 @@ export default {
     ...mapGetters({ count: 'cartCount', user: 'user' })
   },
   methods: {
+    ...mapActions(['logout']),
     navMenu() {
       const menuIcon = document.querySelector('.menu-icon')
       const sidebar = document.querySelector('.sidebar')

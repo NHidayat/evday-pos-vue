@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 import router from '../../router/index'
 
@@ -32,9 +33,21 @@ export default {
       })
     },
     logout(context) {
-      localStorage.removeItem('token')
-      context.commit('delUser')
-      router.push('/login')
+      Vue.$confirm({
+        title: 'Are you sure?',
+        message: 'Are you sure you want to logout?',
+        button: {
+          yes: 'Yes',
+          no: 'Cancel'
+        },
+        callback: confirm => {
+          if (confirm) {
+            localStorage.removeItem('token')
+            context.commit('delUser')
+            router.push('/login')
+          }
+        }
+      })
     },
     register(context, payload) {
       return new Promise((resolve, reject) => {

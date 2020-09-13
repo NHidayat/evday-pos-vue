@@ -5,7 +5,7 @@
       <b-row>
         <Sidebar />
         <b-container>
-          <div class="main-content col-md-12">
+          <div class="main-content col-md-11">
             <div class="table-section">
               <div class="row">
                 <div class="col-6">
