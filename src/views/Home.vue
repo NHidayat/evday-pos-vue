@@ -39,7 +39,6 @@ import Navbar from '../components/_base/Navbar'
 import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
 import Cart from '../components/_base/Cart'
-import axios from 'axios'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   title: 'Home - Evday POS',
@@ -75,7 +74,7 @@ export default {
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
-    ...mapActions({ get_product: 'getProduct' }),
+    ...mapActions({ get_product: 'getProduct', searchProduct: 'searchProduct' }),
     ...mapMutations(['setPage', 'generateCheckoutData']),
     paginationSetup(data) {
       this.setPage(data)
@@ -102,19 +101,6 @@ export default {
         this.cart.push(setCart)
       }
       this.generateCheckoutData()
-    },
-    searchProduct(data) {
-      axios.get(`http://127.0.0.1:3000/product/search/q?product_name=${data.product_name}`)
-        .then(res => {
-          this.isAlert = false
-          this.products = res.data.data
-          this.$router.push(`?product_name=${data.product_name}`)
-        })
-        .catch(error => {
-          console.log(error)
-          this.isAlert = true
-          this.alertMsg = error.response.data.msg
-        })
     }
   }
 }

@@ -91,6 +91,19 @@ export default {
             reject(error)
           })
       })
+    },
+    searchProduct(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.VUE_APP_API_URL + `product/search/q?product_name=${payload.product_name}`)
+          .then(res => {
+            context.commit('setIsAlert', false)
+            context.commit('setProducts', res.data.data)
+          }).catch(error => {
+            context.commit('setProducts', [])
+            context.commit('setIsAlert', true)
+            context.commit('setAlertMsg', error.response.data.msg)
+          })
+      })
     }
   },
   getters: {

@@ -9,14 +9,13 @@
                 <img src="../../assets/menu.png" class="menu-icon" ref="menuicon">
               </b-col>
               <b-col md="10" cols="9" class="nav-title">
-                <small class="float-right">{{ user.user_email }}</small>
-                <h4 class="text-center" v-if="!isSearch">Evday POS</h4>
-                <form v-else @submit.prevent="searchProduct">
-                  <input type="text" placeholder="Search Product ..." class="mt-3 form-control col-12" v-model="form.product_name" />
-                  <b-button type="submit" class="c-serach-btn my-primary mt-1" size="sm">
-                    <b-icon-search></b-icon-search>
-                  </b-button>
-                </form>
+                <div v-if="!isSearch">
+                  <span class="float-right">{{ user.user_name }}</span>
+                  <h4 class="text-center">Evday POS</h4>
+                </div>
+                <b-nav-form @submit.prevent="searchProduct" class="float-right mt-3" v-else>
+                  <b-form-input type="search" size="sm" class="mr-sm-1" v-model="form.product_name" placeholder="Search"></b-form-input>
+                </b-nav-form>
               </b-col>
               <b-col cols="1" md="1" class="search-section">
                 <img src="../../assets/search.png" class="search-icon" v-if="!isSearch" @click="showSearch">
@@ -27,7 +26,7 @@
             </b-row>
           </div>
           <b-col md="4" class="cart-header">
-            <h5  class="text-center">Cart <span class="badge badge-cart">{{ count }}</span></h5>
+            <h5 class="text-center">Cart <span class="badge badge-cart">{{ count }}</span></h5>
           </b-col>
           <div class="cart-mobile">
             <a href="#cart-section">
