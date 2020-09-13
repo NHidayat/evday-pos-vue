@@ -10,15 +10,12 @@
               <div class="row">
                 <div class="col-6">
                   <h3>Category List</h3>
+                </div>
+                <div class="col-6" align="right">
                   <b-button variant="outline-success" v-b-modal.category-modal @click="setAdd">
                     <b-icon-plus></b-icon-plus>
                     Add Catgory
                   </b-button>
-                </div>
-                <div class="col-6">
-                  <select class="float-right range-select">
-                    <option value="month">Sort</option>
-                  </select>
                 </div>
               </div>
               <div class="mt-2">

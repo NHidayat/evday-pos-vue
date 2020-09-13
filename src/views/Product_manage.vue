@@ -9,7 +9,9 @@
             <div class="table-section">
               <div class="row">
                 <div class="col-md-12">
-                  <h3>Product List</h3>
+                  <b-col md="6">
+                    <h3>Product List</h3>
+                  </b-col>
                   <SortingGroup @generateSorting="generateSorting" />
                 </div>
               </div>
