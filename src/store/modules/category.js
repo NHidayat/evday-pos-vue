@@ -11,7 +11,7 @@ export default {
   actions: {
     getCategories(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get('http://127.0.0.1:3000/category')
+        axios.get(process.env.VUE_APP_API_URL + 'category')
           .then(res => {
             context.commit('setCategories', res.data.data)
             resolve(res)
@@ -24,7 +24,7 @@ export default {
     },
     postCategory(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://127.0.0.1:3000/category', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'ategory', payload)
           .then(res => {
             resolve(res)
           })
@@ -35,7 +35,7 @@ export default {
     },
     patchCategory(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://127.0.0.1:3000/category/${payload.category_id}`, payload.form)
+        axios.patch(process.env.VUE_APP_API_URL + `category/${payload.category_id}`, payload.form)
           .then(res => {
             resolve(res)
           })

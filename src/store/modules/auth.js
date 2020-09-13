@@ -20,7 +20,7 @@ export default {
     login(context, payload) {
       return new Promise((resolve, reject) => {
         console.log(payload)
-        axios.post('http://127.0.0.1:3000/users/login', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'users/login', payload)
           .then(response => {
             console.log(response)
             context.commit('setUser', response.data.data)
@@ -38,7 +38,7 @@ export default {
     },
     register(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://127.0.0.1:3000/users/register', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'users/register', payload)
           .then(response => {
             resolve(response)
           }).catch(error => {

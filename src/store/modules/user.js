@@ -23,7 +23,7 @@ export default {
     },
     patchUser(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://127.0.0.1:3000/users/edit/${payload.user_id}`, payload.form)
+        axios.patch(process.env.VUE_APP_API_URL + `users/edit/${payload.user_id}`, payload.form)
           .then(res => {
             resolve(res)
           })

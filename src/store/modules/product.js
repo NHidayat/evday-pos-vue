@@ -61,7 +61,7 @@ export default {
     },
     postProduct(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://127.0.0.1:3000/product', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'product', payload)
           .then(res => {
             resolve(res)
           })
@@ -72,7 +72,7 @@ export default {
     },
     updateProducts(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://127.0.0.1:3000/product/${payload.product_id}`, payload.form)
+        axios.patch(process.env.VUE_APP_API_URL + `product/${payload.product_id}`, payload.form)
           .then(res => {
             resolve(res)
           })
@@ -83,7 +83,7 @@ export default {
     },
     deleteProduct(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.delete(`http://127.0.0.1:3000/product/${payload.product_id}`)
+        axios.delete(process.env.VUE_APP_API_URL + `product/${payload.product_id}`)
           .then(res => {
             resolve(res)
           })

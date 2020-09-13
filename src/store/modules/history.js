@@ -36,7 +36,7 @@ export default {
   actions: {
     getHistories(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://127.0.0.1:3000/history?page=${context.state.page}&limit=${context.state.limit}`)
+        axios.get(process.env.VUE_APP_API_URL + `history?page=${context.state.page}&limit=${context.state.limit}`)
           .then(res => {
             context.commit('setHistories', res.data.data)
             context.commit('setTotalData', res.data.pagination.totalData)
@@ -49,7 +49,7 @@ export default {
     },
     getHistoriesIncome(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get('http://127.0.0.1:3000/history/histories-income/alpha')
+        axios.get(process.env.VUE_APP_API_URL + 'history/histories-income/alpha')
           .then(res => {
             const dailyData = []
             res.data.data.dailyIncome.map(v => dailyData.push([v.date, v.total]))
@@ -66,7 +66,7 @@ export default {
     },
     getHistoryDetail(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://127.0.0.1:3000/history/${payload.history_id}`)
+        axios.get(process.env.VUE_APP_API_URL + `history/${payload.history_id}`)
           .then(res => {
             resolve(res)
           })
@@ -77,7 +77,7 @@ export default {
     },
     postHistory(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://127.0.0.1:3000/history', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'history', payload)
           .then(res => {
             resolve(res)
           })
