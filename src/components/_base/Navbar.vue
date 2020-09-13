@@ -21,7 +21,7 @@
                   <h4 class="text-center">Evday POS</h4>
                 </div>
                 <b-nav-form @submit.prevent="searchProduct" class="float-right mt-3" v-else>
-                  <b-form-input type="search" size="sm" class="mr-sm-1" v-model="form.product_name" placeholder="Search"></b-form-input>
+                  <b-form-input type="search" size="sm" class="mr-sm-1" v-model="form.product_name" placeholder="Search" v-focus></b-form-input>
                 </b-nav-form>
               </b-col>
               <b-col cols="1" md="1" class="search-section">

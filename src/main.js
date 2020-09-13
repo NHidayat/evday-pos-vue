@@ -21,6 +21,12 @@ Vue.use(Chartkick.use(Chart))
 
 Vue.config.productionTip = false
 
+Vue.directive('focus', {
+  inserted: el => {
+    el.focus()
+  }
+})
+
 new Vue({
   router,
   store,

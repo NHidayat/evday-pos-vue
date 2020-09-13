@@ -5,10 +5,10 @@
         <b-row>
           <div class="navigation col-md-12">
             <b-row>
-              <b-col cols="3" md="2" class="menu-icon-section">
+              <b-col cols="1" md="2" class="menu-icon-section">
                 <img src="../../assets/menu.png" class="menu-icon">
               </b-col>
-              <b-col cols="6" md="7" class="nav-title">
+              <b-col cols="8" md="7" class="nav-title">
                 <h4 class="text-center">{{ title }}</h4>
               </b-col>
               <b-col cols="3" md="3" class="search-section">
