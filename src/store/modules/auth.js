@@ -20,10 +20,8 @@ export default {
   actions: {
     login(context, payload) {
       return new Promise((resolve, reject) => {
-        console.log(payload)
         axios.post(process.env.VUE_APP_API_URL + 'users/login', payload)
           .then(response => {
-            console.log(response)
             context.commit('setUser', response.data.data)
             localStorage.setItem('token', response.data.data.token)
             resolve(response.data)
@@ -72,7 +70,6 @@ export default {
       axios.interceptors.response.use(function(response) {
         return response
       }, function(error) {
-        console.log(error.response)
         if (error.response.status === 403) {
           if (error.response.data.msg === 'invalid token' || error.response.data.msg === 'invalid signature') {
             localStorage.removeItem('token')

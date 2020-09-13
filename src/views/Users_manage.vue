@@ -125,7 +125,6 @@ export default {
 
       this.patchUser(setData)
         .then(res => {
-          console.log(res)
           this.makeToast(res.data.msg, 'primary')
           this.closeModal()
           this.getAllUsers()

@@ -49,7 +49,6 @@ export default {
         .then(result => {
           this.$router.push('/')
         }).catch(error => {
-          console.log(error)
           this.alertMsg = error.data.msg
           this.isAlert = true
           this.isLoading = false

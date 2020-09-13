@@ -24,7 +24,7 @@ export default {
     },
     postCategory(context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post(process.env.VUE_APP_API_URL + 'ategory', payload)
+        axios.post(process.env.VUE_APP_API_URL + 'category', payload)
           .then(res => {
             resolve(res)
           })
