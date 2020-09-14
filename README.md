@@ -1,6 +1,6 @@
-<h1 align='center'>Vue JS - #Eday POS</h1>
+<h1 align='center'>Vue JS - #Evday POS</h1>
 
-Hi buddy.
+Hi buddy.<br/>
 Evday POS is a point of sale web application built with JavaScript, Vue JS and supported by several other dependencies. Evday pos provides several features that you can use and manage easily. This project is the frontend of the evday POS RESTfull API that has been done before, you can see it [`here`](https://github.com/NHidayat/evday-pos).
 [More about Vue](https://vuejs.org/)
 
