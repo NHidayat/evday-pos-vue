@@ -72,7 +72,6 @@
   </b-col>
 </template>
 <script>
-import axios from 'axios'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   data() {
@@ -90,7 +89,7 @@ export default {
     }
   },
   created() {
-    this.getCategories()
+    this.get_ategories()
   },
   computed: {
     ...mapGetters({ user: 'user' })
@@ -98,7 +97,8 @@ export default {
   methods: {
     ...mapActions({
       postProduct: 'postProduct',
-      getProduct: 'getProduct'
+      getProduct: 'getProduct',
+      getCategories: 'getCategories'
     }),
     clearForm() {
       this.form = {
@@ -145,8 +145,8 @@ export default {
           this.makeToast(this.isMsg, 'danger')
         })
     },
-    getCategories() {
-      axios.get('http://127.0.0.1:3000/category')
+    get_ategories() {
+      this.getCategories()
         .then(res => {
           this.categories = res.data.data
         })
