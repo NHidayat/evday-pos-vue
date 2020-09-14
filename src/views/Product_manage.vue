@@ -107,7 +107,6 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import Navbar from '../components/_base/Navbar_full'
 import Sidebar from '../components/_base/Sidebar'
 import SortingGroup from '../components/_base/Sorting_group'
