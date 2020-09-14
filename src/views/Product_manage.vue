@@ -136,7 +136,7 @@ export default {
   },
   created() {
     this.get_products()
-    this.getCategories()
+    this.get_categories()
   },
   computed: {
     ...mapGetters({
@@ -149,7 +149,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts', deleteProduct: 'deleteProduct' }),
+    ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts', deleteProduct: 'deleteProduct', getCategories: 'getCategories' }),
     ...mapMutations(['setPage']),
     formatN(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -175,8 +175,8 @@ export default {
         solid: true
       })
     },
-    getCategories() {
-      axios.get('http://127.0.0.1:3000/category')
+    get_categories() {
+      this.getCategories()
         .then(res => {
           this.categories = res.data.data
         })
