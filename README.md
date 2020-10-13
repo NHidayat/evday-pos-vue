@@ -22,6 +22,12 @@ Evday POS is a point of sale web application built with JavaScript, Vue JS and s
 3. Type `npm install` or `yarn install`
 4. Type `npm start`
 
+## Setup env
+```
+VUE_APP_BASE_URL= this project url
+VUE_APP_API_URL= API or backend url
+```
+
 ## Visit the Web
 
 You can visit the web [`here`](https://evday-pos-frontend.netlify.app/)
