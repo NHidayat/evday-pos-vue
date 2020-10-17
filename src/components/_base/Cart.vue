@@ -45,7 +45,7 @@
             <button href="#" class="btn my-primary" data-toggle="modal" @click="post_order">
               <span v-if="!isLoading">Checkout</span>
               <span v-else>
-                 <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+                <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
               </span>
             </button>
             <button class="btn my-danger" @click="clearCart">Cancel</button>
@@ -84,8 +84,11 @@
         </b-row>
         <div>
           <b-row class="modal-footer button-section">
-            <button type="button" class="btn my-danger col-12">Print</button>
-            <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px">Or</span>
+            <button type="button" @click="download" class="btn my-danger col-12" v-if="!isLoading">Print</button>
+            <button type="button" class="btn my-danger col-12" disabled v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </button>
+            <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px;">Or</span>
             <button type="button" class="btn my-primary col-12">Send Email</button>
           </b-row>
         </div>
@@ -95,8 +98,10 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import MixinsCart from '../../mixins/mixins_cart'
 export default {
   name: 'Cart',
+  mixins: [MixinsCart],
   data() {
     return {
       isMsg: '',
@@ -122,15 +127,6 @@ export default {
   methods: {
     ...mapMutations(['generateCheckoutData', 'clearCart']),
     ...mapActions({ postOrder: 'postHistory' }),
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
-    },
     getIndexPush(id, qty) {
       const getIndex = this.items.findIndex(obj => obj.product_id === id)
       this.items[getIndex].qty += qty
