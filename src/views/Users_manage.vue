@@ -72,7 +72,14 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-          <button type="submit" class="btn my-primary col-md-3">Update</button>
+          <button type="submit" class="btn my-primary col-md-3">
+            <div v-if="!isLoading">
+              <span>Update</span>
+            </div>
+            <div v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </div>
+          </button>
         </div>
       </form>
     </b-modal>
@@ -93,6 +100,7 @@ export default {
   data() {
     return {
       title: 'Manage Users',
+      isLoading: false,
       form: {
         user_name: '',
         user_status: ''
@@ -117,13 +125,13 @@ export default {
       }
       this.user_id = data.user_id
     },
-    patch_user() {
+    async patch_user() {
+      this.setLoading(true)
       const setData = {
         user_id: this.user_id,
         form: this.form
       }
-
-      this.patchUser(setData)
+      await this.patchUser(setData)
         .then(res => {
           this.makeToast(res.data.msg, 'primary')
           this.closeModal()
@@ -131,15 +139,7 @@ export default {
         }).catch(error => {
           this.makeToast(error.response.data.msg, 'danger')
         })
-    },
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
+      this.setLoading(false)
     }
   }
 }

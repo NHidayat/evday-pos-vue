@@ -99,8 +99,15 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-          <button type="submit" class="btn my-primary col-md-3">Update</button>
+          <button type="button" class="btn my-danger col-md-3" @click="closeModal('edit-product-modal')">Cancel</button>
+          <button type="submit" class="btn my-primary col-md-3">
+            <div v-if="!isLoading">
+              <span>Update</span>
+            </div>
+            <div v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </div>
+          </button>
         </div>
       </form>
     </b-modal>
@@ -124,6 +131,7 @@ export default {
       title: 'Manage Product',
       categories: [],
       product_id: '',
+      isLoading: false,
       form: {
         product_name: '',
         product_price: '',
@@ -150,9 +158,6 @@ export default {
   methods: {
     ...mapActions({ get_products: 'getAllProduct', updateProducts: 'updateProducts', deleteProduct: 'deleteProduct', getCategories: 'getCategories' }),
     ...mapMutations(['setPage']),
-    formatN(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
     paginationSetup(data) {
       this.setPage(data)
       this.get_products()
@@ -161,18 +166,6 @@ export default {
     generateSorting(data) {
       this.orderBy = data
       this.get_products()
-    },
-    closeModal() {
-      this.$refs['edit-product-modal'].hide()
-    },
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
     },
     get_categories() {
       this.getCategories()
@@ -196,7 +189,8 @@ export default {
     handleFile(e) {
       this.form.product_image = e.target.files[0]
     },
-    patchProduct() {
+    async patchProduct() {
+      this.setLoading(true)
       const data = new FormData()
       data.append('product_name', this.form.product_name)
       data.append('product_price', this.form.product_price)
@@ -207,12 +201,12 @@ export default {
         product_id: this.product_id,
         form: data
       }
-      this.updateProducts(setData)
+      await this.updateProducts(setData)
         .then(res => {
           this.products = res.data.data
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
-          this.closeModal()
+          this.closeModal('edit-product-modal')
           this.get_products()
         })
         .catch(error => {
@@ -220,6 +214,7 @@ export default {
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
+      this.setLoading(false)
     },
     delete_product(data) {
       this.$confirm({

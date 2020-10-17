@@ -60,7 +60,7 @@
       </b-row>
     </section>
     <b-modal id="category-modal" ref="category-modal" centered hide-footer :title="modalTitle">
-      <form @submit.prevent="post_category">
+      <form @submit.prevent="onSubmit">
         <div class=" form-group row">
           <label class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-10">
@@ -77,9 +77,19 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-          <button type="button" class="btn my-primary col-md-3" @click="patch_category" v-show="isUpdate">Update</button>
-          <button type="submit" class="btn my-primary col-md-3" v-show="!isUpdate">Add</button>
+          <button type="button" class="btn my-danger col-md-3" @click="closeClearModal('category-modal')">Cancel</button>
+          <button type="button" class="btn my-primary col-md-3" @click="patch_category" v-show="isUpdate">
+            <div v-if="!isLoading">Update</div>
+            <div v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </div>
+          </button>
+          <button type="submit" class="btn my-primary col-md-3" v-show="!isUpdate">
+            <div v-if="!isLoading">Add</div>
+            <div v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </div>
+          </button>
         </div>
       </form>
     </b-modal>
@@ -102,6 +112,7 @@ export default {
       modalTitle: '',
       isUpdate: false,
       isAlert: false,
+      isLoading: false,
       alertMsg: '',
       form: {
         category_name: '',
@@ -121,43 +132,38 @@ export default {
       postCategory: 'postCategory',
       patchCategory: 'patchCategory'
     }),
+    onSubmit() {
+      this.setLoading(true)
+      if (this.isUpdate) {
+        this.patch_category()
+      } else {
+        this.post_category()
+      }
+    },
     clearForm() {
       this.form = {
         category_name: '',
         category_status: ''
       }
     },
-    closeModal() {
-      this.$refs['category-modal'].hide()
-      this.clearForm()
-    },
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
-    },
     setAdd() {
       this.modalTitle = 'Add Category'
       this.isUpdate = false
     },
-    post_category() {
-      this.postCategory(this.form)
+    async post_category() {
+      await this.postCategory(this.form)
         .then(res => {
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.getCategories()
-          this.closeModal()
+          this.closeClearModal('category-modal')
           this.clearForm()
         })
         .catch(error => {
-          console.log(error)
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
+      this.setLoading(false)
     },
     setcategory(data) {
       this.modalTitle = 'Edit Category'
@@ -168,7 +174,7 @@ export default {
       }
       this.category_id = data.category_id
     },
-    patch_category() {
+    async patch_category() {
       const setData = {
         category_id: this.category_id,
         form: this.form
@@ -179,16 +185,15 @@ export default {
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
           this.getCategories()
-          this.closeModal()
+          this.closeClearModal('category-modal')
         })
         .catch(error => {
-          console.log(error)
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
+      this.setLoading(false)
     },
     deletecategory(data) {
-      console.log(data.category_id)
       this.category_id = data.category_id
       this.form = {
         category_name: data.category_name,
