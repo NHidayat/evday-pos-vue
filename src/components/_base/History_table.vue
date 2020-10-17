@@ -78,9 +78,6 @@ export default {
   methods: {
     ...mapActions(['getHistories', 'getHistoryDetail']),
     ...mapMutations(['setPage']),
-    formatN(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
     paginationSetup(data) {
       this.setPage(data)
       this.getHistories()

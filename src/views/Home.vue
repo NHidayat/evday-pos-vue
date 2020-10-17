@@ -71,9 +71,6 @@ export default {
     })
   },
   methods: {
-    formatN(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
     ...mapActions({ get_product: 'getProduct', searchProduct: 'searchProduct' }),
     ...mapMutations(['setPage', 'generateCheckoutData']),
     paginationSetup(data) {
