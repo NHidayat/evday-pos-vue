@@ -42,8 +42,13 @@
             </b-row>
           </div>
           <div class="button-section">
-            <a href="#" class="btn my-primary" data-toggle="modal" @click="post_order">Checkout</a>
-            <a href="#" class="btn my-danger" @click="clearCart">Cancel</a>
+            <button href="#" class="btn my-primary" data-toggle="modal" @click="post_order">
+              <span v-if="!isLoading">Checkout</span>
+              <span v-else>
+                <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+              </span>
+            </button>
+            <button class="btn my-danger" @click="clearCart">Cancel</button>
           </div>
         </div>
       </div>
@@ -79,8 +84,11 @@
         </b-row>
         <div>
           <b-row class="modal-footer button-section">
-            <button type="button" class="btn my-danger col-12">Print</button>
-            <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px">Or</span>
+            <button type="button" @click="download" class="btn my-danger col-12" v-if="!isLoading">Print</button>
+            <button type="button" class="btn my-danger col-12" disabled v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </button>
+            <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px;">Or</span>
             <button type="button" class="btn my-primary col-12">Send Email</button>
           </b-row>
         </div>
@@ -90,11 +98,14 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import MixinsCart from '../../mixins/mixins_cart'
 export default {
   name: 'Cart',
+  mixins: [MixinsCart],
   data() {
     return {
       isMsg: '',
+      isLoading: false,
       invoice: '',
       cashier_name: '',
       resCartItems: [],
@@ -116,24 +127,6 @@ export default {
   methods: {
     ...mapMutations(['generateCheckoutData', 'clearCart']),
     ...mapActions({ postOrder: 'postHistory' }),
-    formatN(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
-    showModal() {
-      this.$refs['checkout-modal'].show()
-    },
-    hideModal() {
-      this.$refs['checkout-modal'].hide()
-    },
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
-    },
     getIndexPush(id, qty) {
       const getIndex = this.items.findIndex(obj => obj.product_id === id)
       this.items[getIndex].qty += qty
@@ -156,13 +149,14 @@ export default {
       this.generateCheckoutData()
     },
     post_order() {
+      this.setLoading(true)
       const data = {
         cashier_name: this.user.user_name,
-        tes: '122',
         items: this.items
       }
       this.postOrder(data)
         .then(res => {
+          this.setLoading(false)
           this.isMsg = res.data.msg
           this.invoice = res.data.data.history_invoice
           this.resCartItems = res.data.data.items
@@ -171,11 +165,10 @@ export default {
           this.resTax = res.data.data.history_ppn
           this.resTotal = res.data.data.history_total
           this.makeToast(this.isMsg, 'primary')
-          this.showModal()
+          this.showModal('checkout-modal')
           this.clearCart(true)
         })
         .catch(error => {
-          console.log(error)
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })

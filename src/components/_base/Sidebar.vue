@@ -63,8 +63,15 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn my-danger col-md-3" @click="closeModal">Cancel</button>
-            <button type="submit" class="btn my-primary col-md-3">Add</button>
+            <button type="button" class="btn my-danger col-md-3" @click="closeModal('add-product-modal')">Cancel</button>
+            <button type="submit" class="btn my-primary col-md-3">
+              <div v-if="!isLoading">
+              <span>Add</span>
+            </div>
+            <div v-else>
+              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+            </div>
+            </button>
           </div>
         </form>
       </b-modal>
@@ -79,6 +86,7 @@ export default {
       alert: false,
       isMsg: 'Tes',
       categories: [],
+      isLoading: false,
       form: {
         product_name: '',
         product_price: '',
@@ -109,24 +117,11 @@ export default {
         product_status: ''
       }
     },
-    makeToast(msg, variant = null, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Hei',
-        autoHideDelay: 10000,
-        appendToast: append,
-        variant: variant,
-        solid: true
-      })
-    },
-    closeModal() {
-      this.$refs['add-product-modal'].hide()
-    },
     handleUpload(event) {
-      console.log(event.target.files[0])
       this.form.product_image = event.target.files[0]
     },
-    addProduct() {
-      // console.log(this.form)
+    async addProduct() {
+      this.setLoading(true)
       const data = new FormData()
       data.append('product_name', this.form.product_name)
       data.append('product_price', this.form.product_price)
@@ -137,13 +132,14 @@ export default {
         .then(res => {
           this.isMsg = res.data.msg
           this.makeToast(this.isMsg, 'primary')
-          this.closeModal()
+          this.closeModal('add-product-modal')
           this.getProduct()
           this.clearForm()
         }).catch(error => {
           this.isMsg = error.response.data.msg
           this.makeToast(this.isMsg, 'danger')
         })
+      this.setLoading(false)
     },
     get_ategories() {
       this.getCategories()
