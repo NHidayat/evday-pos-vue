@@ -85,6 +85,17 @@ export default {
             reject(error)
           })
       })
+    },
+    sendEmail(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.post(process.env.VUE_APP_API_URL + 'history/send-email', payload)
+          .then(res => {
+            resolve(res.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     }
   },
   getters: {

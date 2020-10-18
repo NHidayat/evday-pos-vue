@@ -84,12 +84,23 @@
         </b-row>
         <div>
           <b-row class="modal-footer button-section">
-            <button type="button" @click="download" class="btn my-danger col-12" v-if="!isLoading">Print</button>
-            <button type="button" class="btn my-danger col-12" disabled v-else>
-              <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
-            </button>
+            <div class="col-12">
+              <button type="button" @click="download" class="btn my-danger col-12" v-if="!isLoading">Print</button>
+              <button type="button" class="btn my-danger col-12" disabled v-else>
+                <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+              </button>
+            </div>
             <span class="col-12" style="font-weight: 600;text-align: center;margin-top: 10px;">Or</span>
-            <button type="button" class="btn my-primary col-12">Send Email</button>
+            <div v-if="!setEmail" class="col-12">
+              <button type="button" class="btn my-primary" @click="set_email">Send Email</button>
+            </div>
+            <div class="col-12" v-else>
+              <b-input type="email" placeholder="Enter the target email ..." v-model="target_email" required />
+              <button type="button" class="btn my-primary col-12" v-if="!emailLoading" @click="send_email">Send</button>
+              <button type="button" class="btn my-primary col-12" v-else>
+                <b-spinner small variant="light" type="grow" label="Loading..."></b-spinner>
+              </button>
+            </div>
           </b-row>
         </div>
       </div>
@@ -106,12 +117,15 @@ export default {
     return {
       isMsg: '',
       isLoading: false,
+      emailLoading: false,
       invoice: '',
       cashier_name: '',
       resCartItems: [],
       resCartSubtotal: '',
       resTax: '',
       resTotal: '',
+      setEmail: false,
+      target_email: '',
       api_url: process.env.VUE_APP_API_URL
     }
   },
@@ -126,7 +140,7 @@ export default {
   },
   methods: {
     ...mapMutations(['generateCheckoutData', 'clearCart']),
-    ...mapActions({ postOrder: 'postHistory' }),
+    ...mapActions(['postHistory', 'sendEmail']),
     getIndexPush(id, qty) {
       const getIndex = this.items.findIndex(obj => obj.product_id === id)
       this.items[getIndex].qty += qty
@@ -136,6 +150,23 @@ export default {
         this.items[getIndex].subtotal -= this.items[getIndex].product_price
       }
       this.generateCheckoutData()
+    },
+    set_email() {
+      this.setEmail = true
+    },
+    async send_email() {
+      this.emailLoading = true
+      const setData = {
+        history_invoice: this.invoice,
+        target_email: this.target_email
+      }
+      await this.sendEmail(setData)
+        .then(res => {
+          this.makeToast(res.msg, 'primary')
+        }).catch(error => {
+          this.makeToast(error.data.msg, 'danger')
+        })
+      this.emailLoading = false
     },
     incItemQty(id) {
       this.getIndexPush(id, 1)
@@ -154,23 +185,21 @@ export default {
         cashier_name: this.user.user_name,
         items: this.items
       }
-      this.postOrder(data)
+      this.postHistory(data)
         .then(res => {
           this.setLoading(false)
-          this.isMsg = res.data.msg
           this.invoice = res.data.data.history_invoice
           this.resCartItems = res.data.data.items
           this.cashier_name = res.data.data.cashier_name
           this.resCartSubtotal = res.data.data.items.map(item => item.subtotal).reduce((a, b) => a + b)
           this.resTax = res.data.data.history_ppn
           this.resTotal = res.data.data.history_total
-          this.makeToast(this.isMsg, 'primary')
+          this.makeToast(res.data.msg, 'primary')
           this.showModal('checkout-modal')
           this.clearCart(true)
         })
         .catch(error => {
-          this.isMsg = error.response.data.msg
-          this.makeToast(this.isMsg, 'danger')
+          this.makeToast(error.response.data.msg, 'danger')
         })
     }
   }
