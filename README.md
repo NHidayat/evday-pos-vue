@@ -1,4 +1,4 @@
-<h1 align='center'>Vue JS - SkuyChat</h1>
+<h1 align='center'>Vue JS ~ Evday-POS</h1>
   <p align="center">
     <a href="https://evday-pos-frontend.netlify.app/" target="_blank">View Demo</a>
     ·
