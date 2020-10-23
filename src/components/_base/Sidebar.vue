@@ -5,7 +5,7 @@
         <li>
           <router-link to="/"><img src="../../assets/fork.png"></router-link>
         </li>
-        <li v-if="user.user_role === 1">
+        <li>
           <router-link to="/history"><img src="../../assets/clipboard.png"></router-link>
         </li>
         <li v-if="user.user_role === 1">

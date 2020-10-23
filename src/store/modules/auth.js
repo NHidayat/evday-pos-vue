@@ -57,6 +57,16 @@ export default {
           })
       })
     },
+    activation(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.post(process.env.VUE_APP_API_URL + 'users/activation-user', payload)
+          .then(response => {
+            resolve(response)
+          }).catch(error => {
+            reject(error.response)
+          })
+      })
+    },
     interceptorRequest(context) {
       console.log('interceptorRequest work')
       axios.interceptors.request.use(function(config) {
