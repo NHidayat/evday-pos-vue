@@ -56,6 +56,11 @@
     <b-modal scrollable id="checkout-modal" ref="checkout-modal" hide-footer hide-header>
       <div class="modal-header">
         <b-row>
+          <div class="col-12" style="position: relative;top: -8px">
+              <button type="button" class="close" @click="closeModal('checkout-modal')">
+                <span>&times;</span>
+              </button>
+            </div>
           <b-col md="3">
             <h5>Checkout</h5>
           </b-col>
@@ -201,6 +206,7 @@ export default {
         .catch(error => {
           this.makeToast(error.response.data.msg, 'danger')
         })
+      // this.showModal('checkout-modal')
     }
   }
 }
