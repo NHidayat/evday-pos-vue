@@ -60,10 +60,7 @@ export default {
     ...mapGetters({ todayIncome: 'getTodayIncome', thisWeekData: 'getThisWeekIncome', thisYearIncome: 'getThisYearIncome', daily: 'getDailyIncome' })
   },
   methods: {
-    ...mapActions({ getHistoriesIncome: 'getHistoriesIncome' }),
-    formatN(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    }
+    ...mapActions(['getHistoriesIncome'])
   }
 }
 

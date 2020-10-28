@@ -9,8 +9,24 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Chartkick from 'vue-chartkick'
 import Chart from 'chart.js'
 import Mixins from './mixins/mixins'
+import VueProgressBar from 'vue-progressbar'
 import VueConfirmDialog from 'vue-confirm-dialog'
 
+const options = {
+  color: '#57CAD5',
+  failedColor: '#57CAD5',
+  thickness: '5px',
+  transition: {
+    speed: '0.2s',
+    opacity: '0.6s',
+    termination: 300
+  },
+  autoRevert: true,
+  location: 'top',
+  inverse: false
+}
+
+Vue.use(VueProgressBar, options)
 Vue.use(VueConfirmDialog)
 Vue.component('vue-confirm-dialog', VueConfirmDialog.default)
 
