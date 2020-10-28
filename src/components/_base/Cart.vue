@@ -206,7 +206,6 @@ export default {
         .catch(error => {
           this.makeToast(error.response.data.msg, 'danger')
         })
-      // this.showModal('checkout-modal')
     }
   }
 }
